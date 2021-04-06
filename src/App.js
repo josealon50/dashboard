@@ -1,27 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import asyncComponent from './hoc/asyncComponent/asyncComponent';
 
+const asyncAuth = asyncComponent(() => {
+    return import('./containers/Auth/Auth');
+});
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+class App extends Component {
+    render () {
+        let routes = (
+            <Switch>
+              <Route path="/auth" component={asyncAuth} />
+              <Route path="/" exact component={asyncAuth} />
+              <Redirect to="/" />
+            </Switch>
+        );
+        return (
+            <div>
+                {routes}
+            </div>
+        );
+    }
 }
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.auth.token !== null
+    };
+};
+const mapDispatchToProps = dispatch => {
+    return {
 
-export default App;
+    };
+};
+
+export default withRouter( connect( mapStateToProps, mapDispatchToProps )( App ) );
+
