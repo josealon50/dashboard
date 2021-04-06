@@ -1,5 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
+import asyncComponent from './hoc/asyncComponent/asyncComponent';
+
 
 function App() {
   return (
