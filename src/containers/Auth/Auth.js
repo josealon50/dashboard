@@ -11,16 +11,20 @@ import './Auth.css';
 
 
 class Auth extends Component {
+    state = {
+        username : '',
+        pw : ''
+    }
     componentDidMount () {
         if ( this.props.authRedirectPath !== '/' ) {
             this.props.onSetAuthRedirectPath();
         }
     }
 
-
     submitHandler = ( event ) => {
         event.preventDefault();
-        this.props.onAuth( this.state.controls.email.value, this.state.controls.password.value );
+        const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
+        this.props.onAuth( formDataObj.username, formDataObj.password );
     }
 
     render () {
@@ -36,11 +40,11 @@ class Auth extends Component {
                         <center>
                             <Form.Group controlId="formBasicEmail">
                                 <Form.Label>Username</Form.Label>
-                                <Form.Control type="email" placeholder="Username" />
+                                <Form.Control type="email" placeholder="Username" name="username" />
                             </Form.Group>
                             <Form.Group controlId="formBasicPassword">
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" placeholder="Password" />
+                                <Form.Control type="password" placeholder="Password" name="password" />
                             </Form.Group>
                             <Button variant="primary" type="submit">
                                 Submit
@@ -67,8 +71,6 @@ class Auth extends Component {
 
 const mapStateToProps = state => {
     return {
-        loading: state.auth.loading,
-        error: state.auth.error,
         isAuthenticated: state.auth.token !== null,
         authRedirectPath: state.auth.authRedirectPath
     };
@@ -76,7 +78,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAuth: ( email, password, isSignup ) => dispatch( actions.auth( email, password, isSignup ) ),
+        onAuth: ( email, password ) => dispatch( actions.auth( email, password ) ),
         onSetAuthRedirectPath: () => dispatch( actions.setAuthRedirectPath( '/' ) )
     };
 };
