@@ -53,7 +53,7 @@ class Auth extends Component {
 
         let errorMessage = null;
         if ( this.props.error ) {
-            errorMessage = <Alert show={this.props.error} onClose={this.onCloseAlert} dismissible variant="danger">{this.props.error_msg}</Alert>
+            errorMessage = <Alert style={{zIndex:99999}}  show={this.props.error} onClose={this.onCloseAlert} dismissible variant="danger">{this.props.error_msg}</Alert>
         }
 
 
