@@ -19,14 +19,23 @@ export const authSuccess = (token, userId) => {
 export const authFail = (error) => {
     return {
         type: actionTypes.AUTH_FAIL,
-        error: error
+        error: true,
+        error_msg: error
     };
 };
 
+export const authFailHandle = () => {
+    return {
+        type: actionTypes.AUTH_FAIL_HANDLE,
+        error: false,
+        error_msg: ''
+    };
+        
+}
 export const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('access_token');
     localStorage.removeItem('expirationDate');
-    localStorage.removeItem('userId');
+    localStorage.removeItem('refresh_token');
     return {
         type: actionTypes.AUTH_LOGOUT
     };
@@ -63,7 +72,9 @@ export const auth = (username, password) => {
                 dispatch(checkAuthTimeout(response.data.expiresIn));
             })
             .catch(function (error) {
-                dispatch(authFail(error.response.data.error));
+                console.log("BEFORE ERROR MSG PRINT");
+                console.log(error);
+                dispatch(authFail(error.response.data.errors[0].detail));
             });
     };
 };

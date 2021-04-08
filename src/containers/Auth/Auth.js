@@ -7,13 +7,13 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert'
 import './Auth.css';
 
 
 class Auth extends Component {
     state = {
-        username : '',
-        pw : ''
+        visible : true
     }
     componentDidMount () {
         if ( this.props.authRedirectPath !== '/' ) {
@@ -27,11 +27,24 @@ class Auth extends Component {
         this.props.onAuth( formDataObj.username, formDataObj.password );
     }
 
+    onCloseAlert = () =>{
+        window.setTimeout(()=>{
+            this.props.onAuthFailHandle();
+        },500);
+    }
+
+
     render () {
         let authRedirect = null;
         if ( this.props.isAuthenticated ) {
             authRedirect = <Redirect to={this.props.authRedirectPath} />
         }
+
+        let errorMessage = null;
+        if ( this.props.error ) {
+            errorMessage = <Alert show={this.props.error} onClose={this.onCloseAlert} dismissible variant="danger">{this.props.error_msg}</Alert>
+        }
+
 
         let form =  
             <React.Fragment>
@@ -56,6 +69,7 @@ class Auth extends Component {
 
         return (
                 <div>
+                    {errorMessage}
                     {authRedirect}
                     <Container>
                         <Row className="center">
@@ -72,6 +86,8 @@ class Auth extends Component {
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.token !== null,
+        error: state.auth.error,
+        error_msg : state.auth.error_msg,
         authRedirectPath: state.auth.authRedirectPath
     };
 };
@@ -79,6 +95,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onAuth: ( email, password ) => dispatch( actions.auth( email, password ) ),
+        onAuthFailHandle:  () => dispatch( actions.authFailHandle() ),
         onSetAuthRedirectPath: () => dispatch( actions.setAuthRedirectPath( '/' ) )
     };
 };
