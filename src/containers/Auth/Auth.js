@@ -13,7 +13,8 @@ import './Auth.css';
 
 class Auth extends Component {
     state = {
-        visible : true
+        username : null,
+        password : null
     }
     componentDidMount () {
         if ( this.props.authRedirectPath !== '/' ) {
@@ -23,14 +24,23 @@ class Auth extends Component {
 
     submitHandler = ( event ) => {
         event.preventDefault();
-        const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
-        this.props.onAuth( formDataObj.username, formDataObj.password );
+        if ( this.state.username && this.state.password  ){
+            const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
+            this.props.onAuth( formDataObj.username, formDataObj.password );
+        }
     }
 
     onCloseAlert = () =>{
         window.setTimeout(()=>{
             this.props.onAuthFailHandle();
-        },500);
+        },100);
+    }
+
+    setUsername = ( username ) => {
+        this.setState({'username' : username}); 
+    }
+    setPassword = ( password ) => {
+        this.setState({'password' : password}); 
     }
 
 
@@ -53,11 +63,11 @@ class Auth extends Component {
                         <center>
                             <Form.Group controlId="formBasicEmail">
                                 <Form.Label>Username</Form.Label>
-                                <Form.Control type="email" placeholder="Username" name="username" />
+                                <Form.Control type="email" placeholder="Username" name="username" onChange={ e => this.setUsername(e.target.value) }/>
                             </Form.Group>
                             <Form.Group controlId="formBasicPassword">
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control type="password" placeholder="Password" name="password" />
+                                <Form.Control type="password" placeholder="Password" name="password" onChange={ e => this.setPassword(e.target.value) }/>
                             </Form.Group>
                             <Button variant="primary" type="submit">
                                 Submit

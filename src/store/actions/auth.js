@@ -72,9 +72,8 @@ export const auth = (username, password) => {
                 dispatch(checkAuthTimeout(response.data.expiresIn));
             })
             .catch(function (error) {
-                console.log("BEFORE ERROR MSG PRINT");
-                console.log(error);
                 dispatch(authFail(error.response.data.errors[0].detail));
+            
             });
     };
 };
