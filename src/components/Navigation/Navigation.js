@@ -6,7 +6,7 @@ import "./Navigation.css";
 
 const navigationItems = ( props ) => (
     <Navbar className='color-nav container-fluid' variant="dark" fixed="top" expand="lg">
-      <Navbar.Brand href="logout">SDBB Dashboard</Navbar.Brand>
+      <Navbar.Brand href="/">SDBB Dashboard</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
