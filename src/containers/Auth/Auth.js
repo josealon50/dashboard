@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert'
 import './Auth.css';
+import sdbb from '../../assets/SDBB_Logo.png';
 
 
 class Auth extends Component {
@@ -59,6 +60,11 @@ class Auth extends Component {
         let form =  
             <React.Fragment>
                 <Container>
+                    <Row className="justify-content-md-center">
+                        <center>
+                            <img src={sdbb} alt="sdbb_logo"/>
+                        </center>
+                    </Row>
                     <Row className="justify-content-md-center">
                         <center>
                             <Form.Group controlId="formBasicEmail">

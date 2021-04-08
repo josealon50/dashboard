@@ -4,3 +4,8 @@
     align-items: center;
     height:100vh;
 }
+
+img {
+    max-width: 45%;
+    height: auto;
+}
