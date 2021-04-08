@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import asyncComponent from './hoc/asyncComponent/asyncComponent';
 import Container from 'react-bootstrap/Container'
 import * as actions from './store/actions/index';
+import Navigation from './components/Navigation/Navigation';
 
 
 const asyncAuth = asyncComponent(() => {
@@ -22,14 +23,18 @@ class App extends Component {
             </Switch>
         );
         return (
-            <Container fluid>
-                <div>
-                    {routes}
-                </div>
-            </Container>
+            <>
+                <Navigation/>
+                <Container fluid>
+                    <div>
+                        {routes}
+                    </div>
+                </Container>
+            </>
         );
     }
 }
+
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.token !== null
