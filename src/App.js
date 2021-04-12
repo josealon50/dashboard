@@ -5,6 +5,7 @@ import asyncComponent from './hoc/asyncComponent/asyncComponent';
 import Container from 'react-bootstrap/Container'
 import * as actions from './store/actions/index';
 import Navigation from './components/Navigation/Navigation';
+import Footer from './components/Footer/Footer';
 
 
 const asyncAuth = asyncComponent(() => {
@@ -30,6 +31,7 @@ class App extends Component {
                         {routes}
                     </div>
                 </Container>
+                <Footer/>
             </>
         );
     }
