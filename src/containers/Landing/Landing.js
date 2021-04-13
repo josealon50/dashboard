@@ -84,7 +84,7 @@ class Landing extends Component {
             .map( listKey => {
                 return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
                     if( m.active ){
-                        return <ListGroup.Item key={listKey + i}><FontAwesomeIcon icon={m.img}/> {m.name} </ListGroup.Item> ;
+                        return <ListGroup.Item key={listKey + i} action className="round"><FontAwesomeIcon style={{color: 'black', 'vertical-align': 'middle', 'font-size': '600%' }} icon={m.img}/> <span style={{'display': 'block'}}>{m.name}</span></ListGroup.Item> ;
 
 
                     }
@@ -96,7 +96,7 @@ class Landing extends Component {
                     <Container>
                         <Row className="justify-content-md-center">
                             <center>
-                                <ListGroup horizontal> 
+                                <ListGroup horizontal='md'> 
                                     {accessModules}
                                 </ListGroup>
                             </center>
