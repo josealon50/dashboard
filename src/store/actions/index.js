@@ -5,3 +5,7 @@ export {
     authFailHandle,
     authCheckState
 } from './auth';
+
+export {
+    setLandingRedirectPath,
+} from './me';
