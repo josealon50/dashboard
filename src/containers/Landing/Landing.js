@@ -18,37 +18,44 @@ class Landing extends Component {
             'reports' : {
                 'name' : 'Reports',
                 'img' : 'file',
-                'active' : false
+                'active' : false,
+                'href' : 'Reports'
             },
             'shipments' : {
                 'name' : 'Shipments',
                 'img' : 'truck',
-                'active' : false
+                'active' : false,
+                'href' : 'Shipments'
             },
             'hospitals' : {
                 'name' : 'Hospitals',
                 'img' :  'hospital',
-                'active' : false
+                'active' : false,
+                'href' : 'Hospitals'
             },
-            'components' : {
-                'name' : 'Components',
-                'img' : 'glasses',
-                'active' : false
+            'alerts' : {
+                'name' : 'Alerts',
+                'img' : 'bell',
+                'active' : false,
+                'href' : 'Alerts'
             },
             'users' : {
                 'name' : 'Users', 
                 'img' : 'users',
-                'active' : false
+                'active' : false,
+                'href' : 'Users'
             },
             'phenotypes' : {
                 'name' : 'Phenotypes',
                 'img' : 'search',
-                'active' : false
+                'active' : false,
+                'href' : 'Phenotypes'
             },
             'orders' : {
                 'name' : 'Orders',
                 'img' : "receipt",
-                'active' : false
+                'active' : false,
+                'href' : 'Orders'
             }
         }
     }
@@ -84,7 +91,7 @@ class Landing extends Component {
             .map( listKey => {
                 return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
                     if( m.active ){
-                        return <ListGroup.Item key={listKey + i} action bsPrefix='round' ><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'vertical-align': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
+                        return <ListGroup.Item key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'vertical-align': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
 
 
                     }
