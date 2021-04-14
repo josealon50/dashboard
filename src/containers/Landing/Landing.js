@@ -84,7 +84,7 @@ class Landing extends Component {
             .map( listKey => {
                 return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
                     if( m.active ){
-                        return <ListGroup.Item key={listKey + i} action className="round"><FontAwesomeIcon style={{color: 'black', 'vertical-align': 'middle', 'font-size': '600%' }} icon={m.img}/> <span style={{'display': 'block'}}>{m.name}</span></ListGroup.Item> ;
+                        return <ListGroup.Item key={listKey + i} action bsPrefix='round' ><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'vertical-align': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
 
 
                     }

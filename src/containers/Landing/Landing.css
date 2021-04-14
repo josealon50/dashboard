@@ -5,3 +5,24 @@
     height:100vh;
 }
 
+
+.round {
+    border: none;
+    padding: 20px;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 10px;
+    width: 200px;
+    height: 125px;
+}
+
+.module_name {
+    display: block;
+}
+
+.fontAwesome {
+    color: 'rgb( 6, 126, 189 )'; 
+    vertical-align: middle;
+    font-size: '400%';
+}
