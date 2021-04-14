@@ -9,9 +9,9 @@ import Footer from './components/Footer/Footer';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell, faStroopwafel, faUsers, faFile, faTruck, faHospital, faSearch, faReceipt, faGlasses } from '@fortawesome/free-solid-svg-icons'
+import { faChartLine, faBell, faStroopwafel, faUsers, faFile, faTruck, faHospital, faSearch, faReceipt, faGlasses } from '@fortawesome/free-solid-svg-icons'
 
-library.add( faBell, faStroopwafel, faUsers, faFile, faTruck, faHospital, faSearch, faReceipt, faGlasses )
+library.add( faChartLine, faBell, faStroopwafel, faUsers, faFile, faTruck, faHospital, faSearch, faReceipt, faGlasses )
 
 const asyncAuth = asyncComponent(() => {
     return import('./containers/Auth/Auth');

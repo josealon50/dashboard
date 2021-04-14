@@ -59,7 +59,7 @@ class Landing extends Component {
             },
             'dashboards' : {
                 'name' : 'Dashboards',
-                'img' : "receipt",
+                'img' : "chart-line",
                 'active' : false,
                 'href' : 'dashboards'
             }
@@ -95,17 +95,6 @@ class Landing extends Component {
 
         let accessModulesFirstList = Object.keys( this.state.list_modules ).slice(0, 4);
         let accessModulesSecondList = Object.keys( this.state.list_modules ).slice(4, 8);
-        /*
-            .map( listKey => {
-                return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
-                    if( m.active ){
-                        return <ListGroup.Item min-width='md' key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'verticalAlign': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
-
-
-                    }
-                });
-            });
-        */
         return (
                 <div className="center">
                     {redirect}
