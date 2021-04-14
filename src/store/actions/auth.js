@@ -8,11 +8,10 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (token, userId) => {
+export const authSuccess = (token) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
-        idToken: token,
-        userId: userId
+        idToken: token
     };
 };
 
@@ -64,12 +63,13 @@ export const auth = (username, password) => {
         };
         axios(config)
             .then(function (response) {
-                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
+                const expirationDate = new Date(new Date().getTime() + 60 * 1000);
                 localStorage.setItem('access_token', response.data.data.access);
                 localStorage.setItem('refresh_token', response.data.data.refresh);
                 localStorage.setItem('expirationDate', expirationDate);
-                dispatch(authSuccess(response.data.idToken, response.data.localId));
-                dispatch(checkAuthTimeout(response.data.expiresIn));
+                dispatch(authSuccess(response.data.data.access));
+                dispatch(checkAuthTimeout(600));
+                dispatch(setAuthRedirectPath('/me'));
             })
             .catch(function (error) {
                 dispatch(authFail(error.response.data.errors[0].detail));
@@ -87,7 +87,7 @@ export const setAuthRedirectPath = (path) => {
 
 export const authCheckState = () => {
     return dispatch => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('access_token');
         if (!token) {
             dispatch(logout());
         } 
@@ -97,8 +97,7 @@ export const authCheckState = () => {
                 dispatch(logout());
             } 
             else {
-                const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId));
+                dispatch(authSuccess(token));
                 dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000 ));
             }   
         }
