@@ -19,43 +19,49 @@ class Landing extends Component {
                 'name' : 'Reports',
                 'img' : 'file',
                 'active' : false,
-                'href' : 'Reports'
+                'href' : 'reports'
             },
             'shipments' : {
                 'name' : 'Shipments',
                 'img' : 'truck',
                 'active' : false,
-                'href' : 'Shipments'
+                'href' : 'shipments'
             },
             'hospitals' : {
                 'name' : 'Hospitals',
                 'img' :  'hospital',
                 'active' : false,
-                'href' : 'Hospitals'
+                'href' : 'hospitals'
             },
             'alerts' : {
                 'name' : 'Alerts',
                 'img' : 'bell',
                 'active' : false,
-                'href' : 'Alerts'
+                'href' : 'alerts'
             },
             'users' : {
                 'name' : 'Users', 
                 'img' : 'users',
                 'active' : false,
-                'href' : 'Users'
+                'href' : 'users'
             },
             'phenotypes' : {
                 'name' : 'Phenotypes',
                 'img' : 'search',
                 'active' : false,
-                'href' : 'Phenotypes'
+                'href' : 'phenotypes'
             },
             'orders' : {
                 'name' : 'Orders',
                 'img' : "receipt",
                 'active' : false,
-                'href' : 'Orders'
+                'href' : 'orders'
+            },
+            'dashboards' : {
+                'name' : 'Dashboards',
+                'img' : "receipt",
+                'active' : false,
+                'href' : 'dashboards'
             }
         }
     }
@@ -87,24 +93,48 @@ class Landing extends Component {
             redirect = <Redirect to='/' />
         }
 
-        let accessModules = Object.keys( this.state.list_modules )
+        let accessModulesFirstList = Object.keys( this.state.list_modules ).slice(0, 4);
+        let accessModulesSecondList = Object.keys( this.state.list_modules ).slice(4, 8);
+        /*
             .map( listKey => {
                 return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
                     if( m.active ){
-                        return <ListGroup.Item key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'vertical-align': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
+                        return <ListGroup.Item min-width='md' key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'verticalAlign': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
 
 
                     }
                 });
             });
+        */
         return (
                 <div className="center">
                     {redirect}
                     <Container>
                         <Row className="justify-content-md-center">
                             <center>
-                                <ListGroup horizontal='md'> 
-                                    {accessModules}
+                                <ListGroup horizontal> 
+                                    { accessModulesFirstList.map( listKey => {
+                                            return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
+                                                if( m.active ){
+                                                    return <ListGroup.Item min-width='md' key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'verticalAlign': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
+
+
+                                                }
+                                            });
+                                        })
+                                    }
+                                </ListGroup>
+                                <ListGroup horizontal> 
+                                    { accessModulesSecondList.map( listKey => {
+                                            return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
+                                                if( m.active ){
+                                                    return <ListGroup.Item min-width='md' key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'verticalAlign': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
+
+
+                                                }
+                                            });
+                                        })
+                                    }
                                 </ListGroup>
                             </center>
                         </Row>
