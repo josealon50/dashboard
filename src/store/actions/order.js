@@ -1,17 +1,32 @@
 import axios from '../../axios-dashboard';
 import * as actionTypes from './actionTypes';
 
-export const orderStart = () => {
+export const orderGetStart = () => {
     return {
-        type: actionTypes.AUTH_START
+        type: actionTypes.ORDER_GET_START
     };
 };
 
-export const orderFail = (error) => {
+export const orderGetSuccess = () => {
+    return {
+        type: actionTypes.ORDER_GET_SUCCESS
+    };
+};
+
+export const orderGetFail = (error) => {
     return {
         type: actionTypes.AUTH_FAIL,
         error: true,
         error_msg: error
     };
+};
+
+export const orderFailHandle = () => {
+    return {
+        type: actionTypes.ORDER_GET_FAIL_HANDLE,
+        error: false,
+        error_msg: ''
+    };
+    
 };
 
