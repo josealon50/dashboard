@@ -105,7 +105,7 @@ class Landing extends Component {
                                     { accessModulesFirstList.map( listKey => {
                                             return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
                                                 if( m.active ){
-                                                    return <ListGroup.Item min-width='md' key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'verticalAlign': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
+                                                    return <ListGroup.Item min-width='md' key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'verticalAlign': 'middle', fontSize: '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
 
 
                                                 }
@@ -117,7 +117,7 @@ class Landing extends Component {
                                     { accessModulesSecondList.map( listKey => {
                                             return [...Array( this.state.list_modules[listKey] )].map( ( m, i ) => {
                                                 if( m.active ){
-                                                    return <ListGroup.Item min-width='md' key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'verticalAlign': 'middle', 'font-size': '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
+                                                    return <ListGroup.Item min-width='md' key={listKey + i} action bsPrefix='button' href={m.href}><FontAwesomeIcon style={{color: 'rgb( 6, 126, 189 )', 'verticalAlign': 'middle', fontSize: '400%' }} icon={m.img}/> <span className='module_name'>{m.name}</span></ListGroup.Item> ;
 
 
                                                 }
