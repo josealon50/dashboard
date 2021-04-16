@@ -11,6 +11,8 @@ export {
 } from './me';
 
 export {
-    orderStart,
-    orderFail,
+    orderGetStart,
+    orderGetSuccess,
+    orderGetFail,
+    orderFailHandle,
 } from './order';

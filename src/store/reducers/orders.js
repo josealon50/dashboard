@@ -13,7 +13,7 @@ export const orderGetStart = () => {
     };
 };
 
-export const orderGetSucess = (token) => {
+export const orderGetSucess = () => {
     return {
         type: actionTypes.ORDER_GET_SUCCESS
     };
