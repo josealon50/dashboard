@@ -14,5 +14,5 @@ export {
     orderGetStart,
     orderGetSuccess,
     orderGetFail,
-    orderFailHandle,
+    orderGetFailHandle,
 } from './order';

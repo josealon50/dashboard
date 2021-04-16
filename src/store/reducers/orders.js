@@ -13,7 +13,7 @@ export const orderGetStart = () => {
     };
 };
 
-export const orderGetSucess = () => {
+export const orderGetSuccess = () => {
     return {
         type: actionTypes.ORDER_GET_SUCCESS
     };
@@ -27,7 +27,7 @@ export const orderGetFail = (error) => {
     };
 };
 
-export const orderFailHandle = () => {
+export const orderGetFailHandle = () => {
     return {
         type: actionTypes.ORDER_GET_FAIL_HANDLE,
         error: false,
