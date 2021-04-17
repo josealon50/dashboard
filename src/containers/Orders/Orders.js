@@ -8,7 +8,10 @@ import Row from 'react-bootstrap/row';
 import Alert from 'react-bootstrap/alert';
 import Table from 'react-bootstrap/Table'
 import axios from '../../axios-dashboard';
+import styles from './Orders.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Moment from 'react-moment';
+import shortid from 'shortid';
 
 
 
@@ -23,6 +26,9 @@ class Orders extends Component {
             first: null,
             last: null
         },
+        header:  [ 'Employee', 'Priority', 'Status', 'Created'  ]
+
+        
     }
 
     componentDidMount() {
@@ -36,7 +42,9 @@ class Orders extends Component {
                     _this.setState({ ..._this.state, orders: response.data, pagination: response.data.links })
                 })
                 .catch(function (error) {
-                    _this.props.onOrderGetFail( error );
+                    if( error.request.status == 401 ){
+                        _this.props.onOrderGetFail("Unauthorized") ;
+                    }
                 });
         }
     }
@@ -48,6 +56,7 @@ class Orders extends Component {
     }
 
 
+
     render () {
         let redirect = null;
         if ( !this.props.isAuthenticated ) {
@@ -57,33 +66,53 @@ class Orders extends Component {
         let errorMessage = null;
         if ( this.props.error ){
             //Create the alert 
-            errorMessage = <Alert style={{zIndex:99999}}  show={this.props.error} onClose={this.onCloseErrorAlert} dismissible variant="danger">{this.props.error_msg}</Alert>
-        }
+            errorMessage = <Alert style={{zIndex:99999}}  show={this.props.error} onClose={this.onCloseErrorAlert} dismissible variant="danger">{this.props.error_msg}</Alert>;
 
-        let orders = null;
+            //this.onSetAuthRedirectPath('/');
+        }
+        let hospitalName = null;
+        let body = [];
         if( this.state.orders.data.length > 0 ){
-            orders = <td>TEST</td>;            
-
+            hospitalName = this.state.orders.data[0].attributes.hospital.name + " Orders ";
+            
+            this.state.orders.data.forEach((order, index) => { 
+                body.push(
+                    <tr key={shortid.generate()}>
+                        <td key={shortid.generate()}>{order.attributes.emp_initials}</td>
+                        <td key={shortid.generate()}>{order.attributes.priority}</td>
+                        <td key={shortid.generate()}>Order</td>
+                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{order.attributes.created_at}</Moment></td>
+                    </tr>
+                );
+            })
         }
+        
+        
         return (
-                <div className="center">
+                <React.Fragment>
                     {errorMessage}
-                    <Container>
-                        <Row>
-                            <Table>
-                                <thead>
-                                    <tr>
-                                        <th>TEST</th>
-                                        <th>TEST</th>
-                                        <th>TEST</th>
-                                        <th>TEST</th>
-                                    </tr>
-                                </thead>
-                                {{orders}}
-                            </Table>
-                        </Row>
-                    </Container>
-                </div>
+                    <div style={{paddingTop: '120px'}}>
+                        <Container>
+                            <h3>{hospitalName}</h3>
+                            <center>
+                                <Row className="justify-content-md-center">
+                                    <Table responsive>
+                                        <thead>
+                                            <tr key={shortid.generate()}>
+                                                { this.state.header.map((header, index) => (
+                                                    <th key={shortid.generate()}>{header}</th>))
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {body}
+                                        </tbody>
+                                    </Table>
+                                </Row>
+                            </center>
+                        </Container>
+                    </div>
+                </React.Fragment>
             );
     }
 }
@@ -103,7 +132,7 @@ const mapDispatchToProps = dispatch => {
         onOrderGetStart: () => dispatch( actions.orderGetStart() ),
         onOrderGetSuccess: () => dispatch( actions.orderGetSuccess() ),
         onOrderGetFail: ( error ) => dispatch( actions.orderGetFail(error) ),
-        onOrderFailHandle: () => dispatch( actions.orderGetFailHandle() ),
+        onOrderFailHandle: () => dispatch( actions.authFailHandle() ),
     };
 };
 
