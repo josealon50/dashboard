@@ -49,14 +49,6 @@ export const orderGetOrderStatusFail = (error) => {
     };
 };
 
-export const orderGetStatusFailHandle = () => {
-    return {
-        type: actionTypes.ORDER_GET_STATUS_FAIL_HANDLE,
-        error: false,
-        error_msg: ''
-    };
-        
-}
 
 //Order Components
 export const orderGetComponentStart = () => {
@@ -78,14 +70,6 @@ export const orderGetComponentFail = (error) => {
     };
 };
 
-export const orderGetComponentFailHandle = () => {
-    return {
-        type: actionTypes.ORDER_GET_COMPONENTS_FAIL_HANDLE,
-        error: false,
-        error_msg: ''
-    };
-        
-}
 
 //Order Pagination
 export const orderGetPaginationStart = () => {
@@ -107,12 +91,4 @@ export const orderGetPaginationFail = (error) => {
     };
 };
 
-export const orderGetPaginationFailHandle = () => {
-    return {
-        type: actionTypes.ORDER_GET_PAGINATION_FAIL_HANDLE,
-        error: false,
-        error_msg: ''
-    };
-        
-}
 
