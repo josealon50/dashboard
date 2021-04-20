@@ -55,7 +55,21 @@ class Orders extends Component {
     
 
     onGetPage = ( pagination )  => {
-        console.log(pagination);
+        if( this.props.isAuthenticated ){
+            this.props.onOrderGetStart();
+            const _this = this;
+
+            axios.get( '/orders', { headers : { Authorization: 'Bearer ' + localStorage.getItem('access_token') }})
+                .then(function (response) {
+                    _this.props.onOrderGetSuccess();
+                    _this.setState({ ..._this.state, orders: response.data, pagination: response.data.links })
+                })
+                .catch(function (error) {
+                    if( error.request.status == 401 ){
+                        _this.props.onOrderGetFail("Unauthorized") ;
+                    }
+                });
+        }
 
     }
 
@@ -163,8 +177,17 @@ const mapDispatchToProps = dispatch => {
     return {
         onOrderGetStart: () => dispatch( actions.orderGetStart() ),
         onOrderGetSuccess: () => dispatch( actions.orderGetSuccess() ),
-        onOrderGetFail: ( error ) => dispatch( actions.orderGetFail(error) ),
+        onOrderGetFail: ( error ) => dispatch( actions.orderGetFail( error ) ),
         onOrderFailHandle: () => dispatch( actions.authFailHandle() ),
+        onOrderGetStatusStart: () => dispatch( actions.orderGetOrderStatusStart() ),
+        onOrderGetStatusSuccess: () => dispatch( actions.orderGetOrderStatusSuccess() ),
+        onOrderGetStatusFail: ( error ) => dispatch( actions.orderGetOrderStatusFail( error ) ),
+        onOrderGetComponentStart: () => dispatch( actions.orderGetComponentStart() ),
+        onOrderGetComponentSuccess: () => dispatch( actions.orderGetComponentSucess() ),
+        onOrderGetComponentFail: ( error ) => dispatch( actions.orderGetComponentFail( error ) ),
+        onOrderGetPaginationStart: () => dispatch( actions.orderGetPaginationStart() ),
+        onOrderGetPaginationSuccess: () => dispatch( actions.orderGetPaginationSuccess() ),
+        onOrderGetPaginationFail: ( error ) => dispatch( actions.orderGetPaginationFail( error ) ),
     };
 };
 
