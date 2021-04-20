@@ -35,12 +35,112 @@ export const orderGetFailHandle = () => {
     };
         
 }
+
+//Order Status
+export const orderGetOrderStatusStart = () => {
+    return {
+        type: actionTypes.ORDER_GET_STATUS_START
+    };
+};
+export const orderGetOrderStatusSuccess = () => {
+    return {
+        type: actionTypes.ORDER_GET_STATUS_SUCESS
+    };
+};
+
+export const orderGetOrderStatusFail = (error) => {
+    return {
+        type: actionTypes.ORDER_GET_STATUS_FAIL,
+        error: true,
+        error_msg: error
+    };
+};
+
+export const orderGetStatusFailHandle = () => {
+    return {
+        type: actionTypes.ORDER_GET_STATUS_FAIL_HANDLE,
+        error: false,
+        error_msg: ''
+    };
+        
+}
+
+//Order Components
+export const orderGetComponentStart = () => {
+    return {
+        type: actionTypes.ORDER_GET_COMPONENTS_START
+    };
+};
+export const orderGetComponentSucess = () => {
+    return {
+        type: actionTypes.ORDER_GET_COMPONENTS_SUCCESS
+    };
+};
+
+export const orderGetComponentFail = (error) => {
+    return {
+        type: actionTypes.ORDER_GET_COMPONENTS_FAIL,
+        error: true,
+        error_msg: error
+    };
+};
+
+export const orderGetComponentFailHandle = () => {
+    return {
+        type: actionTypes.ORDER_GET_COMPONENTS_FAIL_HANDLE,
+        error: false,
+        error_msg: ''
+    };
+        
+}
+
+//Order Pagination
+export const orderGetPaginationStart = () => {
+    return {
+        type: actionTypes.ORDER_GET_PAGINATION_START
+    };
+};
+export const orderGetPaginationSuccess = () => {
+    return {
+        type: actionTypes.ORDER_GET_PAGINATION_SUCCESS
+    };
+};
+
+export const orderGetPaginationFail = (error) => {
+    return {
+        type: actionTypes.ORDER_GET_PAGINATION_FAIL,
+        error: true,
+        error_msg: error
+    };
+};
+
+export const orderGetPaginationFailHandle = () => {
+    return {
+        type: actionTypes.ORDER_GET_PAGINATION_FAIL_HANDLE,
+        error: false,
+        error_msg: ''
+    };
+        
+}
+
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
         case actionTypes.ORDER_GET_START: return orderGetStart(state, action);
         case actionTypes.ORDER_GET_SUCCESS: return orderGetSuccess(state, action);
         case actionTypes.ORDER_GET_FAIL: return orderGetFail(state, action);
         case actionTypes.ORDER_GET_FAIL_HANDLE: return orderGetFailHandle(state, action);
+        case actionTypes.ORDER_GET_STATUS_START: return orderGetOrderStatusStart( state, action );
+        case actionTypes.ORDER_GET_STATUS_SUCESS: return orderGetOrderStatusSuccess( state, action );
+        case actionTypes.ORDER_GET_STATUS_FAIL: return orderGetOrderStatusFail( state, action );
+        case actionTypes.ORDER_GET_STATUS_FAIL_HANDLE: return orderGetStatusFailHandle( state, action );
+        case actionTypes.ORDER_GET_COMPONENTS_START: return orderGetComponentStart( state, action );
+        case actionTypes.ORDER_GET_COMPONENTS_SUCCESS: return orderGetComponentSucess( state, action );
+        case actionTypes.ORDER_GET_COMPONENTS_FAIL: return orderGetComponentFail( state, action );
+        case actionTypes.ORDER_GET_COMPONENTS_FAIL_HANDLE: return orderGetComponentFailHandle( state, action );
+        case actionTypes.ORDER_GET_PAGINATION_START: return orderGetPaginationStart( state, action );
+        case actionTypes.ORDER_GET_PAGINATION_SUCCESS: return orderGetPaginationSuccess( state, action );
+        case actionTypes.ORDER_GET_PAGINATION_FAIL: return orderGetPaginationFail( state, action );
+        case actionTypes.ORDER_GET_PAGINATION_FAIL_HANDLE: return orderGetPaginationFailHandle( state, action );
         default:
             return state;
         }
