@@ -74,7 +74,23 @@ class Orders extends Component {
     }
 
     showOrderStatusHistory = ( order ) => {
-        console.log( order );
+        this.props.onOrderGetStatusStart();
+        if( this.props.isAuthenticated ){
+            this.props.onOrderGetStart();
+
+            const _this = this;
+            axios.get( '/order/' + order + '/status', { headers : { Authorization: 'Bearer ' + localStorage.getItem('access_token') }})
+                .then(function (response) {
+                    _this.props.onOrderGetStatusSuccess();
+                    _this.setState({ ..._this.state, statusHistory: response.data.data });
+                    //Call to modal function to show pop up
+                })
+                .catch(function (error) {
+                    if( error.request.status == 401 ){
+                        _this.props.onOrderGetFail("Unauthorized") ;
+                    }
+                });
+        }
     }
 
     showComponents = ( order ) => {
