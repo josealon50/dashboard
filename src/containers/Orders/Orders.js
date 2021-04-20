@@ -6,7 +6,8 @@ import { updateObject, checkValidity } from '../../shared/utility';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/row';
 import Alert from 'react-bootstrap/alert';
-import Table from 'react-bootstrap/Table'
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 import axios from '../../axios-dashboard';
 import styles from './Orders.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -26,7 +27,9 @@ class Orders extends Component {
             first: null,
             last: null
         },
-        header:  [ 'Employee', 'Priority', 'Status', 'Created'  ]
+        components : [],
+        statusHistory: [],
+        header:  [ 'Employee', 'Priority', 'Status',  'Component Codes', 'Created'  ]
 
         
     }
@@ -47,6 +50,21 @@ class Orders extends Component {
                     }
                 });
         }
+    }
+
+    
+
+    onGetPage = ( pagination )  => {
+        console.log(pagination);
+
+    }
+
+    showOrderStatusHistory = ( order ) => {
+        console.log( order );
+    }
+
+    showComponents = ( order ) => {
+        console.log( order );
     }
 
     onCloseErrorAlert = () =>{
@@ -72,19 +90,29 @@ class Orders extends Component {
         }
         let hospitalName = null;
         let body = [];
+        let next = null;
+        let prev = null;
         if( this.state.orders.data.length > 0 ){
             hospitalName = this.state.orders.data[0].attributes.hospital.name + " Orders ";
             
             this.state.orders.data.forEach((order, index) => { 
                 body.push(
                     <tr key={shortid.generate()}>
+                        <td hidden key={shortid.generate()}>{order.id}</td>
                         <td key={shortid.generate()}>{order.attributes.emp_initials}</td>
                         <td key={shortid.generate()}>{order.attributes.priority}</td>
-                        <td key={shortid.generate()}>Order</td>
+                        <td key={shortid.generate()}><Button variant='link' onClick={ () => this.showOrderStatusHistory(order.id) }>History</Button></td>
+                        <td key={shortid.generate()}><Button variant='link' onClick={ () => this.showComponents(order.id)}>Component Codes</Button></td>
                         <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{order.attributes.created_at}</Moment></td>
                     </tr>
                 );
             })
+            if ( this.state.pagination.next ) {
+                next = <Button style={{display: 'flex', justifyContent: 'flex-end', margin: '2px' }} onClick={() => this.onGetPage(this.state.pagination.next)} type='button'>Previous</Button> ;
+            }
+            if ( this.state.pagination.prev ){
+                prev = <Button style={{display: 'flex', justifyContent: 'flex-end', margin: '2px'}} onClick={() => this.onGetPage(this.state.pagination.prev)} type='button'>Next</Button> ;
+            }
         }
         
         
@@ -108,6 +136,10 @@ class Orders extends Component {
                                             {body}
                                         </tbody>
                                     </Table>
+                                </Row>
+                                <Row style={{float: 'right'}}>
+                                    {next}
+                                    {prev}
                                 </Row>
                             </center>
                         </Container>
