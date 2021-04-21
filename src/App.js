@@ -21,7 +21,7 @@ const asyncLanding = asyncComponent(() => {
     return import('./containers/Landing/Landing');
 });
 
-const asyncShipment = asyncShipment(() => {
+const asyncShipments = asyncComponent(() => {
     return import('./containers/Shipments/Shipments');
 });
 
