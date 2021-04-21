@@ -9,7 +9,7 @@ const functionalModal = ( props ) => {
     return (
         <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered >
             <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">Modal heading</Modal.Title>
+                <Modal.Title id="contained-modal-title-vcenter">{props.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Table> 
@@ -28,7 +28,7 @@ const functionalModal = ( props ) => {
                                 <tr key={shortid.generate()}>
                                     <td key={shortid.generate()}>{body[0]}</td>
                                     <td key={shortid.generate()}>{body[1]}</td>
-                                    <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{body[2]}</Moment></td>
+                                    { props.title == 'Status History' ? <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{body[2]}</Moment></td> : <td>{body[2]}</td> }
                                 </tr>
                             ))
                         

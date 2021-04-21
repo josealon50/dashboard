@@ -193,6 +193,7 @@ class Orders extends Component {
                         onHide={() => this.setModalShow(false)} 
                         header={this.state.statusHistory.length > 0 ? this.state.headers.orderStatus : this.state.headers.shipment} 
                         data={ this.state.statusHistory.length > 0 ? this.state.statusHistory : this.state.components }
+                        title={ this.state.statusHistory.length > 0 ? 'Status History' : 'Comoponents' } 
                 /> 
                 <div style={{paddingTop: '120px'}}>
                     <Container>
