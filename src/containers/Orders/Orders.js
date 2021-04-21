@@ -31,7 +31,12 @@ class Orders extends Component {
         components : [],
         statusHistory: [],
         showModal : false,
-        header:  [ 'Employee', 'Priority', 'Status',  'Component Codes', 'Created'  ]
+        headers:  {
+            main : [ 'Employee', 'Priority', 'Status',  'Component Codes', 'Created'  ],
+            orderStatus : [ '', '', '' ],
+            shipment : [ '', '', '' ]
+        }
+        
 
         
     }
@@ -153,7 +158,7 @@ class Orders extends Component {
         return (
             <React.Fragment>
                 {errorMessage}
-                <FunctionalModal show={this.state.showModal} onHide={() => this.setModalShow(false)} /> 
+                <FunctionalModal show={this.state.showModal} onHide={() => this.setModalShow(false)}  /> 
                 <div style={{paddingTop: '120px'}}>
                     <Container>
                         <h3>{hospitalName}</h3>
@@ -162,7 +167,7 @@ class Orders extends Component {
                                 <Table responsive>
                                     <thead>
                                         <tr key={shortid.generate()}>
-                                            { this.state.header.map((header, index) => (
+                                            { this.state.headers.main.map((header, index) => (
                                                 <th key={shortid.generate()}>{header}</th>))
                                             }
                                         </tr>
