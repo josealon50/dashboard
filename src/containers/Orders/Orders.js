@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Redirect } from 'react-router-dom';
-import * as actions from '../../store/actions/index';
 import { updateObject, checkValidity } from '../../shared/utility';
+import * as actions from '../../store/actions/index';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/row';
 import Alert from 'react-bootstrap/alert';
@@ -10,7 +11,6 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import axios from '../../axios-dashboard';
 import styles from './Orders.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Moment from 'react-moment';
 import shortid from 'shortid';
 import FunctionalModal from '../../components/Modal/FunctionalModal';
@@ -33,8 +33,8 @@ class Orders extends Component {
         showModal : false,
         headers:  {
             main : [ 'Employee', 'Priority', 'Status',  'Component Codes', 'Created'  ],
-            orderStatus : [ '', '', '' ],
-            shipment : [ '', '', '' ]
+            orderStatus : [ 'Status Code', 'Description', 'Status Added' ],
+            shipment : [ 'Abbreviation', 'Component', 'Quantity' ]
         }
         
 
@@ -73,8 +73,7 @@ class Orders extends Component {
                 })
                 .catch(function (error) {
                     if( error.request.status == 401 ){
-                        _this.props.onOrderGetStatusFail();
-                        _this.props.onOrderGetFail("Unauthorized") ;
+                        _this.props.onOrderGetStatusFail("Unauthorized");
                     }
                 });
         }
@@ -90,18 +89,49 @@ class Orders extends Component {
             axios.get( '/order/' + order + '/status', { headers : { Authorization: 'Bearer ' + localStorage.getItem('access_token') }})
                 .then(function (response) {
                     _this.props.onOrderGetStatusSuccess();
-                    _this.setState({ ..._this.state, statusHistory: response.data.data, showModal: true });
+                    let statusData = [];
+                    for( const key of Object.keys(response.data.data) ){
+                        let tmp = [];
+                        tmp[0] = response.data.data[key].attributes.order_status.status_code;
+                        tmp[1] = response.data.data[key].attributes.order_status.description;
+                        tmp[2] = response.data.data[key].attributes.order_status.created_at;
+                        statusData.push(tmp);
+                    }
+                    _this.setState({ ..._this.state, statusHistory: statusData, showModal: true, components: [] });
                 })
                 .catch(function (error) {
                     if( error.request.status == 401 ){
-                        _this.props.onOrderGetFail("Unauthorized") ;
+                        _this.props.onOrderGetFail("Unauthorized");
                     }
                 });
         }
     }
 
     showComponents = ( order ) => {
-        console.log( order );
+        this.props.onOrderGetStatusStart();
+        if( this.props.isAuthenticated ){
+            this.props.onOrderGetComponentStart();
+
+            const _this = this;
+            axios.get( '/order/' + order + '/components', { headers : { Authorization: 'Bearer ' + localStorage.getItem('access_token') }})
+                .then(function (response) {
+                    _this.props.onOrderGetComponentSuccess();
+                    let comps = [];
+                    for( const key of Object.keys(response.data.data) ){
+                        let tmp = [];
+                        tmp[0] = response.data.data[key].attributes.component_code.abbreviation;
+                        tmp[1] = response.data.data[key].attributes.component_code.description;
+                        tmp[2] = response.data.data[key].attributes.quantity;;
+                        comps.push(tmp);
+                    }
+                    _this.setState({ ..._this.state, components: comps, showModal: true, statusHistory: [] });
+                })
+                .catch(function (error) {
+                    if( error == 401 ){
+                        _this.onOrderGetComponentFail("Unauthorized");
+                    }
+                });
+        }
     }
 
     setModalShow = ( show ) => {
@@ -158,7 +188,12 @@ class Orders extends Component {
         return (
             <React.Fragment>
                 {errorMessage}
-                <FunctionalModal show={this.state.showModal} onHide={() => this.setModalShow(false)}  /> 
+                <FunctionalModal 
+                        show={this.state.showModal} 
+                        onHide={() => this.setModalShow(false)} 
+                        header={this.state.statusHistory.length > 0 ? this.state.headers.orderStatus : this.state.headers.shipment} 
+                        data={ this.state.statusHistory.length > 0 ? this.state.statusHistory : this.state.components }
+                /> 
                 <div style={{paddingTop: '120px'}}>
                     <Container>
                         <h3>{hospitalName}</h3>
