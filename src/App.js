@@ -21,6 +21,9 @@ const asyncLanding = asyncComponent(() => {
     return import('./containers/Landing/Landing');
 });
 
+const asyncShipment = asyncShipment(() => {
+    return import('./containers/Shipments/Shipments');
+});
 
 class App extends Component {
     render () {
@@ -28,6 +31,7 @@ class App extends Component {
             <Switch>
                 <Route path="/auth" component={asyncAuth} />
                 <Route path="/me" exact component={asyncLanding}/> 
+                <Route path="/shipments" exact component={asyncShipments}/> 
                 <Route path="/" exact component={asyncAuth} />
                 <Redirect to="/" />
             </Switch>
