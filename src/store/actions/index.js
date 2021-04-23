@@ -9,3 +9,10 @@ export {
 export {
     setLandingRedirectPath,
 } from './me';
+
+
+export {
+    shipmentGetStart,
+    shipmentGetSuccess,
+    shipmentGetFail
+} from './shipment';
