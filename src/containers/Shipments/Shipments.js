@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button';
 import axios from '../../axios-dashboard';
 import Moment from 'react-moment';
 import shortid from 'shortid';
+import ComponentModal from '../../components/ComponentModal/ComponentModal';
 
 
 
@@ -30,7 +31,7 @@ class Shipments extends Component {
         showModal : false,
         headers:  {
             main : [ 'Shipment ID', 'Components', 'Order Priority', 'Shipment Created', 'Order Created' ],
-            components : [ 'Shipment ID', 'Components', 'Order Priority', 'Shipment Created', 'Order Created' ],
+            components : [ 'Unit Number', 'Component Code', 'Blood Type', 'Group', 'Crossover', 'Expiration Date' ],
         }
 
 
@@ -91,7 +92,7 @@ class Shipments extends Component {
                         tmp['group'] = response.data.data[key].attributes.component.component_code.group;
                         comps.push(tmp);
                     }
-                    _this.setState({ ..._this.state, components: comps, showModal: true, statusHistory: [] });
+                    _this.setState({ ..._this.state, components: comps, showModal: true });
                 })
                 .catch(function (error) {
                     if( error == 401 ){
@@ -153,6 +154,13 @@ class Shipments extends Component {
         return (
             <React.Fragment>
                 {errorMessage}
+                <ComponentModal 
+                    show={this.state.showModal} 
+                    onHide={() => this.setModalShow(false)} 
+                    header={ this.state.headers.components } 
+                    data={ this.state.components }
+                    title= { 'Components' }
+                />
                 <div style={{paddingTop: '120px'}}>
                     <Container>
                         <h3>{hospitalName}</h3>
