@@ -6,7 +6,6 @@ import Container from 'react-bootstrap/Container'
 import * as actions from './store/actions/index';
 import Navigation from './components/Navigation/Navigation';
 import Footer from './components/Footer/Footer';
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChartLine, faBell, faStroopwafel, faUsers, faFile, faTruck, faHospital, faSearch, faReceipt, faGlasses } from '@fortawesome/free-solid-svg-icons'
@@ -21,6 +20,10 @@ const asyncLanding = asyncComponent(() => {
     return import('./containers/Landing/Landing');
 });
 
+const asyncOrders = asyncComponent(() => {
+    return import('./containers/Orders/Orders');
+});
+
 
 class App extends Component {
     render () {
@@ -28,6 +31,7 @@ class App extends Component {
             <Switch>
                 <Route path="/auth" component={asyncAuth} />
                 <Route path="/me" exact component={asyncLanding}/> 
+                <Route path="/orders" exact component={asyncOrders}/> 
                 <Route path="/" exact component={asyncAuth} />
                 <Redirect to="/" />
             </Switch>

@@ -12,11 +12,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import authReducer from './store/reducers/auth';
+import meReducer from './store/reducers/me';
+import orderReducer from './store/reducers/orders';
 
 const composeEnhancers = (process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null) || compose;
 
 const rootReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    me: meReducer,
+    order: orderReducer,
 });
 
 const store = createStore(rootReducer, composeEnhancers(

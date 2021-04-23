@@ -10,13 +10,10 @@ const initialState = {
 
 export const setLandingRedirectPath = (path) => {
     return {
-        type: actionTypes.SET_AUTH_LANDING_REDIRECT_PATH,
+        type: actionTypes.SET_LANDING_REDIRECT_PATH,
         path: path
     };
 };
-const setLandingRedirectPath = (state, action) => {
-    return updateObject(state, { landingRedirectPath: action.path })
-}
 
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
