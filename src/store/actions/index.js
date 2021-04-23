@@ -24,3 +24,9 @@ export {
     orderGetPaginationSuccess,
     orderGetPaginationFail,
 } from './order';
+
+export {
+    shipmentGetStart,
+    shipmentGetSuccess,
+    shipmentGetFail
+} from './shipment';
