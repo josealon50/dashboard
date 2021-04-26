@@ -11,7 +11,7 @@ const navigationItems = ( props ) => (
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-            { !props.isAuthenticated ? <Nav.Link href="/">Login</Nav.Link> : <Nav.Link href="/logout">Logout</Nav.Link> }
+            { props.isAuthenticated ? <Nav.Link href="/logout">Logout</Nav.Link> : <Nav.Link href="/">Login</Nav.Link> }
         </Nav>
       </Navbar.Collapse>
     </Navbar>

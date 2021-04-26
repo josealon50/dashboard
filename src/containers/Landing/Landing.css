@@ -27,7 +27,7 @@
     border-radius: 5px;
     border-style: groove;
     line-height: 25px;
-    border-color: #999999;
+    border-color: rgb(240,248,255);
 }
     
 .button:hover {
@@ -37,11 +37,11 @@
 
 .module_name {
     display: block;
-    color: rgb( 6, 126, 189 );
+    color: #0073cf;
 }
 
 .fontAwesome {
-    color: 'rgb( 6, 126, 189 )'; 
+    color: #1D428A; 
     vertical-align: middle;
     font-size: '400%';
 }
