@@ -7,7 +7,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert'
+import Alert from 'react-bootstrap/Alert';
 import './Auth.css';
 import sdbb from '../../assets/SDBB_Logo.png';
 
@@ -17,10 +17,8 @@ class Auth extends Component {
         username : null,
         password : null
     }
-    componentDidMount () {
-        if ( this.props.authRedirectPath !== '/' ) {
-            this.props.onSetAuthRedirectPath();
-        }
+    componentDidMount() {
+        this.props.onCheckAuth();
     }
 
     submitHandler = ( event ) => {
@@ -48,7 +46,7 @@ class Auth extends Component {
     render () {
         let authRedirect = null;
         if ( this.props.isAuthenticated ) {
-            authRedirect = <Redirect to={this.props.authRedirectPath} />
+            authRedirect = <Redirect to="/me" />
         }
 
         let errorMessage = null;
@@ -58,7 +56,7 @@ class Auth extends Component {
 
 
         let form =  
-            <React.Fragment>
+           <React.Fragment>
                 <Container>
                     <Row className="justify-content-md-center">
                         <center>
@@ -69,7 +67,7 @@ class Auth extends Component {
                         <center>
                             <Form.Group controlId="formBasicEmail">
                                 <Form.Label>Username</Form.Label>
-                                <Form.Control type="email" placeholder="Username" name="username" onChange={ e => this.setUsername(e.target.value) }/>
+                                <Form.Control type="username" placeholder="Username" name="username" onChange={ e => this.setUsername(e.target.value) }/>
                             </Form.Group>
                             <Form.Group controlId="formBasicPassword">
                                 <Form.Label>Password</Form.Label>
@@ -101,7 +99,7 @@ class Auth extends Component {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.token !== null,
+        isAuthenticated: state.auth.access_token !== null,
         error: state.auth.error,
         error_msg : state.auth.error_msg,
         authRedirectPath: state.auth.authRedirectPath
@@ -112,7 +110,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onAuth: ( email, password ) => dispatch( actions.auth( email, password ) ),
         onAuthFailHandle:  () => dispatch( actions.authFailHandle() ),
-        onSetAuthRedirectPath: () => dispatch( actions.setAuthRedirectPath( '/' ) )
+        onCheckAuth: () => dispatch( actions.authCheckState() ),
+        onSetAuthRedirectPath: ( path ) => dispatch( actions.setAuthRedirectPath(path) ) 
     };
 };
 
