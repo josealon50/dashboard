@@ -8,10 +8,10 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (token) => {
+export const authSuccess = (access_token) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
-        idToken: token
+        token: access_token
     };
 };
 
@@ -36,7 +36,8 @@ export const logout = () => {
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('refresh_token');
     return {
-        type: actionTypes.AUTH_LOGOUT
+        type: actionTypes.AUTH_LOGOUT,
+        path: '/'
     };
 };
 
@@ -87,8 +88,8 @@ export const setAuthRedirectPath = (path) => {
 
 export const authCheckState = () => {
     return dispatch => {
-        const token = localStorage.getItem('access_token');
-        if (!token) {
+        const access_token = localStorage.getItem('access_token');
+        if (!access_token) {
             dispatch(logout());
         } 
         else {
@@ -97,7 +98,7 @@ export const authCheckState = () => {
                 dispatch(logout());
             } 
             else {
-                dispatch(authSuccess(token));
+                dispatch(authSuccess(access_token));
                 dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000 ));
             }   
         }

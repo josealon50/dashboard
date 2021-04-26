@@ -16,7 +16,7 @@ const authStart = ( state, action ) => {
 
 const authSuccess = (state, action) => {
     return updateObject( state, { 
-        access_token: action.idToken,
+        access_token: action.token,
         userId: action.userId,
         error: null,
         error_msg: '',
@@ -41,11 +41,11 @@ const authFailHandle = (state, action) => {
 };
 
 const authLogout = (state, action) => {
-    return updateObject(state, { token: null, userId: null });
+    return updateObject(state, { access_token: null, authRedirectPath: '/' });
 };
 
 const setAuthRedirectPath = (state, action) => {
-    return updateObject(state, { authRedirectPath: action.path })
+    return updateObject(state, { state, authRedirectPath : action.path })
 }
 
 const reducer = ( state = initialState, action ) => {
