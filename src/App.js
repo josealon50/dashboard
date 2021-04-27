@@ -32,6 +32,10 @@ const asyncShipments = asyncComponent(() => {
     return import('./containers/Shipments/Shipments');
 });
 
+const asyncAlerts = asyncComponent(() => {
+    return import('./containers/Alerts/Alerts');
+});
+
 class App extends Component {
     componentDidMount() {
         this.props.onCheckAuthCheckState();
@@ -52,6 +56,7 @@ class App extends Component {
                     <Route path="/me" exact component={asyncLanding}/> 
                     <Route path="/orders" exact component={asyncOrders}/> 
                     <Route path="/shipments" exact component={asyncShipments}/> 
+                    <Route path="/alerts" exact component={asyncAlerts}/> 
                     <Route path="/logout" exact component={Logout}/> 
                     <Route path="/" exact component={asyncAuth} />
                     <Redirect to="/me" />
