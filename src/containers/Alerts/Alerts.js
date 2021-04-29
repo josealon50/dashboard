@@ -12,7 +12,7 @@ import Button from 'react-bootstrap/Button';
 import axios from '../../axios-dashboard';
 import Moment from 'react-moment';
 import shortid from 'shortid';
-import ComponentModal from '../../components/ComponentModal/ComponentModal';
+//import ComponentModal from '../../components/ComponentModal/ComponentModal';
 
 
 
@@ -30,11 +30,8 @@ class Alerts extends Component {
         components : [],
         showModal : false,
         headers:  {
-            main : [ ],
-            components : [ ],
+            main : [ 'Unit Number', 'Component Code', 'Component Group', 'Blood Type','Cleared By', 'Cleared On', '' ],
         }
-
-
 
     }
 
@@ -43,7 +40,7 @@ class Alerts extends Component {
             //this.props.onShipmentGetStart();
             const _this = this;
 
-            axios.get( '/alerts', { headers : { Authorization: 'Bearer ' + localStorage.getItem('access_token') }})
+            axios.get( '/alerts', { headers : { Authorization: 'Bearer ' + this.props.access_token }})
                 .then(function (response) {
                     //_this.props.onShipmentGetSuccess();
                     _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
@@ -55,12 +52,15 @@ class Alerts extends Component {
     }
 
 
+    clearHospitalAlert = (id) => {
+        alert( id );
+    }
 
     onGetPage = ( pagination )  => {
         //this.props.onShipmentGetStart();
         if( this.props.isAuthenticated ){
             const _this = this;
-            axios.get( pagination, { headers : { Authorization: 'Bearer ' + localStorage.getItem('access_token') }})
+            axios.get( pagination, { headers : { Authorization: 'Bearer ' + this.props.access_token }})
                 .then(function (response) {
                     //_this.props.onShipmentGetSuccess();
                     _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
@@ -73,6 +73,7 @@ class Alerts extends Component {
         }
 
     }
+
 
     setModalShow = ( show ) => {
         this.setState({ ...this.state, showModal: false });
@@ -103,16 +104,19 @@ class Alerts extends Component {
         if( this.state.alerts.data.length > 0 ){
             hospitalName = this.state.alerts.data[0].attributes.hospital.name + " alerts ";
 
-            this.state.alerts.data.forEach((shipment, index) => {
+            this.state.alerts.data.forEach((halert, index) => {
                 body.push(
                     <tr key={shortid.generate()}>
-                        <td key={shortid.generate()}>{shipment.id}</td>
-                        //<td key={shortid.generate()}><Button variant='link' onClick={ () => this.showShipmentComponents(shipment.id)}>Components</Button></td>
-                        <td key={shortid.generate()}>{shipment.attributes.hospital_order.priority}</td>
-                    <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{shipment.attributes.created_at}</Moment></td>
-                    <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{shipment.attributes.hospital_order.created_at}</Moment></td>
+                        <td key={shortid.generate()}>{halert.attributes.component.unit_number}</td>
+                        <td key={shortid.generate()}>{halert.attributes.component.component_code.component_code}</td>
+                        <td key={shortid.generate()}>{halert.attributes.component.component_code.group}</td>
+                        <td key={shortid.generate()}>{halert.attributes.component.blood_type_id.blood_type}</td>
+                        <td key={shortid.generate()}>{halert.attributes.cleared_by}</td>
+                        <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY HH:MM:SS">halert.attributes.cleared_on</Moment> : ''}</td>
+                        <td key={shortid.generate()}><Button variant="success" onClick={() => this.clearHospitalAlert(halert.id)}>Clear</Button></td>
                     </tr>
                 );
+
             })
             if ( this.state.pagination.next ) {
                 next = <Button style={{display: 'flex', justifyContent: 'flex-end', margin: '2px' }} onClick={() => this.onGetPage(this.state.pagination.next)} type='button'>Previous</Button> ;
@@ -126,6 +130,8 @@ class Alerts extends Component {
         return (
             <React.Fragment>
                 {errorMessage}
+                {
+                /*
                 <ComponentModal 
                     show={this.state.showModal} 
                     onHide={() => this.setModalShow(false)} 
@@ -133,6 +139,8 @@ class Alerts extends Component {
                     data={ this.state.components }
                     title= { 'Components' }
                 />
+                */
+                }
                 <div style={{paddingTop: '120px'}}>
                     <Container>
                         <h3>{hospitalName}</h3>
@@ -165,6 +173,7 @@ class Alerts extends Component {
 
 const mapStateToProps = state => {
     return {
+        access_token: state.auth.access_token,
         isAuthenticated: state.auth.access_token !== null,
         error: state.auth.error,
         error_msg : state.auth.error_msg,
