@@ -12,7 +12,6 @@ import Button from 'react-bootstrap/Button';
 import axios from '../../axios-dashboard';
 import Moment from 'react-moment';
 import shortid from 'shortid';
-//import ComponentModal from '../../components/ComponentModal/ComponentModal';
 
 
 
@@ -53,7 +52,7 @@ class Alerts extends Component {
 
 
     clearHospitalAlert = (id) => {
-        alert( id );
+        //Confirm modal
     }
 
     onGetPage = ( pagination )  => {
@@ -102,7 +101,7 @@ class Alerts extends Component {
         let next = null;
         let prev = null;
         if( this.state.alerts.data.length > 0 ){
-            hospitalName = this.state.alerts.data[0].attributes.hospital.name + " alerts ";
+            hospitalName = this.state.alerts.data[0].attributes.hospital.name + " Alerts ";
 
             this.state.alerts.data.forEach((halert, index) => {
                 body.push(
@@ -113,7 +112,7 @@ class Alerts extends Component {
                         <td key={shortid.generate()}>{halert.attributes.component.blood_type_id.blood_type}</td>
                         <td key={shortid.generate()}>{halert.attributes.cleared_by}</td>
                         <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY HH:MM:SS">halert.attributes.cleared_on</Moment> : ''}</td>
-                        <td key={shortid.generate()}><Button variant="success" onClick={() => this.clearHospitalAlert(halert.id)}>Clear</Button></td>
+                        <td key={shortid.generate()}>{halert.attributes.cleared_by === '' ? <Button variant="success" onClick={() => this.clearHospitalAlert(halert.id)}>Clear</Button> : null}</td>
                     </tr>
                 );
 
@@ -130,17 +129,6 @@ class Alerts extends Component {
         return (
             <React.Fragment>
                 {errorMessage}
-                {
-                /*
-                <ComponentModal 
-                    show={this.state.showModal} 
-                    onHide={() => this.setModalShow(false)} 
-                    header={ this.state.headers.components } 
-                    data={ this.state.components }
-                    title= { 'Components' }
-                />
-                */
-                }
                 <div style={{paddingTop: '120px'}}>
                     <Container>
                         <h3>{hospitalName}</h3>
