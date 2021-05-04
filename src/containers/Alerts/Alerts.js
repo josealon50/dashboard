@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Redirect } from 'react-router-dom';
 import { updateObject, checkValidity } from '../../shared/utility';
 import * as actions from '../../store/actions/index';
+import ConfirmModal from '../../components/Modal/ConfirmModal/ConfirmModal';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/row';
 import Alert from 'react-bootstrap/alert';
@@ -26,7 +27,7 @@ class Alerts extends Component {
             first: null,
             last: null
         },
-        components : [],
+        alertId : '',
         showModal : false,
         headers:  {
             main : [ 'Unit Number', 'Component Code', 'Component Group', 'Blood Type','Cleared By', 'Cleared On', '' ],
@@ -36,46 +37,63 @@ class Alerts extends Component {
 
     componentDidMount() {
         if( this.props.isAuthenticated ){
-            //this.props.onShipmentGetStart();
+            this.props.onAlertGetStart();
             const _this = this;
 
             axios.get( '/alerts', { headers : { Authorization: 'Bearer ' + this.props.access_token }})
                 .then(function (response) {
-                    //_this.props.onShipmentGetSuccess();
+                    _this.props.onAlertGetSuccess();
                     _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
                 })
                 .catch(function (error) {
-                    //_this.props.onShipmentGetFail("Unauthorized") ;
+                    _this.props.onAlertGetFail("Unauthorized") ;
                 });
         }
     }
 
 
     clearHospitalAlert = (id) => {
-        //Confirm modal
+        this.setState({ ...this.state, alertId: id, showModal: true });
     }
 
     onGetPage = ( pagination )  => {
-        //this.props.onShipmentGetStart();
+        this.props.onAlertGetStart();
         if( this.props.isAuthenticated ){
             const _this = this;
             axios.get( pagination, { headers : { Authorization: 'Bearer ' + this.props.access_token }})
                 .then(function (response) {
-                    //_this.props.onShipmentGetSuccess();
+                    _this.props.onAlertGetSuccess();
                     _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
                 })
                 .catch(function (error) {
                     if( error.request.status == 401 ){
-                        //_this.onShipmentGetFail("Unauthorized");
+                        _this.onAlertGetFail("Unauthorized");
                     }
                 });
         }
 
     }
 
+    clearAlert = (id) =>  {
+        if( this.props.isAuthenticated ){
+            this.props.onAlertGetStart();
+            const _this = this;
+
+            axios.put( '/alert/' + id + '/clear', null, { headers : { Authorization: 'Bearer ' + this.props.access_token }})
+                .then(function (response) {
+                    _this.props.onAlertGetSuccess();
+                    _this.setState({ ..._this.state, setModalShow: false })
+
+                })
+                .catch(function (error) {
+                    _this.props.onAlertGetFail("Unauthorized") ;
+                    _this.setState({ ..._this.state, setModalShow: false});
+                });
+        }
+    }
 
     setModalShow = ( show ) => {
-        this.setState({ ...this.state, showModal: false });
+        this.setState({ ...this.state, showModal: show });
     }
     onCloseErrorAlert = () =>{
         window.setTimeout(()=>{
@@ -111,8 +129,8 @@ class Alerts extends Component {
                         <td key={shortid.generate()}>{halert.attributes.component.component_code.group}</td>
                         <td key={shortid.generate()}>{halert.attributes.component.blood_type_id.blood_type}</td>
                         <td key={shortid.generate()}>{halert.attributes.cleared_by}</td>
-                        <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY HH:MM:SS">halert.attributes.cleared_on</Moment> : ''}</td>
-                        <td key={shortid.generate()}>{halert.attributes.cleared_by === '' ? <Button variant="success" onClick={() => this.clearHospitalAlert(halert.id)}>Clear</Button> : null}</td>
+                        <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY HH:MM:SS">{halert.attributes.cleared_on}</Moment> : ''}</td>
+                        <td key={shortid.generate()}>{!halert.attributes.cleared_by ? <Button variant="success" onClick={() => this.clearHospitalAlert(halert.id)}>Clear</Button> : null}</td>
                     </tr>
                 );
 
@@ -129,6 +147,13 @@ class Alerts extends Component {
         return (
             <React.Fragment>
                 {errorMessage}
+                <ConfirmModal 
+                    show = {this.state.showModal}
+                    title={'Hospital Alert'}
+                    body={'Are you sure you want clear the alert?'}
+                    onHide={ () => this.setModalShow(false)}
+                    saveChanges={ () => this.clearAlert(this.state.alertId)}
+                />
                 <div style={{paddingTop: '120px'}}>
                     <Container>
                         <h3>{hospitalName}</h3>
@@ -170,10 +195,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        //onAlertGetStart: () => dispatch( actions.shipmentGetStart() ),
-        //onAlertGetSuccess: () => dispatch( actions.shipmentGetSuccess() ),
-        //onAlertGetFail: ( error ) => dispatch( actions.shipmentGetFail( error ) ),
-        //onAlertFailHandle: () => dispatch( actions.authFailHandle() ),
+        onAlertGetStart: () => dispatch( actions.alertGetStart() ),
+        onAlertGetSuccess: () => dispatch( actions.alertGetSuccess() ),
+        onAlertGetFail: ( error ) => dispatch( actions.alertGetFail( error ) ),
+        onAlertFailHandle: () => dispatch( actions.authFailHandle() ),
     };
 };
 
