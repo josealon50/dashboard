@@ -64,12 +64,12 @@ export const auth = (username, password) => {
         };
         axios(config)
             .then(function (response) {
-                const expirationDate = new Date(new Date().getTime() + 60 * 1000);
+                const expirationDate = new Date(new Date().getTime() + 60 * 100000);
                 localStorage.setItem('access_token', response.data.data.access);
                 localStorage.setItem('refresh_token', response.data.data.refresh);
                 localStorage.setItem('expirationDate', expirationDate);
                 dispatch(authSuccess(response.data.data.access));
-                dispatch(checkAuthTimeout(600));
+                dispatch(checkAuthTimeout(600000));
                 dispatch(setAuthRedirectPath('/me'));
             })
             .catch(function (error) {
