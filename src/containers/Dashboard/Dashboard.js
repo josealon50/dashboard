@@ -20,6 +20,10 @@ import FunctionalModal from '../../components/Modal/FunctionalModal';
 class Dashboard extends Component {
     state = {
         hospital_id: this.props.match.params.id,
+        hospital : null,
+        inventory: null,
+        levels: null,
+        groups: null,
         
     }
 
@@ -30,29 +34,34 @@ class Dashboard extends Component {
         axios.get( '/hospitals/' + this.state.hospital_id)
             .then(function (response) {
                 _this.setState({ hospital: response.data.data.attributes });
-                console.log(_this.state);
             })
             .catch(function (error) {
                 if( error.request.status == 404 ){
                 }
+
             });
 
         axios.get( '/hospital/' + this.state.hospital_id + '/shipments')
             .then(function (response) {
+
             })
             .catch(function (error) {
                 if( error.request.status == 404 ){
                 }
+
             });
         axios.get( '/hospital/' + this.state.hospital_id + '/levels')
             .then(function (response) {
+
             })
             .catch(function (error) {
                 if( error.request.status == 404 ){
                 }
+
             });
         axios.get( '/hospital/' + this.state.hospital_id + '/inventory')
             .then(function (response) {
+
             })
             .catch(function (error) {
                 if( error.request.status == 404 ){
@@ -63,9 +72,13 @@ class Dashboard extends Component {
 
 
     render () {
-        console.log(this.state.hospital_id);
+        let hospital = null
+        if ( this.state.hospital ){
+            hospital = <h1>{this.state.hospital.name}</h1>;
+        }         
         return (
             <React.Fragment>
+                {hospital}
             </React.Fragment>
         );
     }
