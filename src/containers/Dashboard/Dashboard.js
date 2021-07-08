@@ -24,49 +24,98 @@ class Dashboard extends Component {
         inventory: null,
         levels: null,
         groups: null,
+        num_orders: null,
+        num_shipments: null,
+        not_found: false
         
     }
 
-    componentDidMount() {
-        //Do calls to the endpoints  
-        const _this = this;
+    showNotFoundMessage = ( show ) => {
+        this.state.not_found = show;
+    }
 
-        axios.get( '/hospitals/' + this.state.hospital_id)
+    getHospitalInfo = ( hospital_id ) => {
+        const _this = this;
+        axios.get( '/hospitals/' + hospital_id)
             .then(function (response) {
                 _this.setState({ hospital: response.data.data.attributes });
             })
             .catch(function (error) {
-                if( error.request.status == 404 ){
-                }
 
             });
+    }
 
+    getHospitalOrders = ( hospital_id ) => {
+        const _this = this;
+        axios.get( '/hospital/' + this.state.hospital_id + '/orders')
+            .then(function (response) {
+                _this.setState({ num_orders: response.data.data.length });
+            })
+            .catch(function (error) {
+
+            });
+    }
+
+    getHospitalShipments = ( hospital_id ) => {
+        const _this = this;
         axios.get( '/hospital/' + this.state.hospital_id + '/shipments')
             .then(function (response) {
+                _this.setState({ num_shipments: response.data.data.length });
 
             })
             .catch(function (error) {
-                if( error.request.status == 404 ){
-                }
 
             });
+    }
+
+    getHospitalLevels = ( hospital_id ) => {
+        const _this = this;
         axios.get( '/hospital/' + this.state.hospital_id + '/levels')
             .then(function (response) {
+                let levels = response.data.data;
+                let component_levels = [];
+                Object.keys(levels).forEach(function(item) { 
+                    let tmp = 
+                    {  
+                            component_code: levels[item].attributes.component_group_id.name, 
+                            critical: levels[item].attributes.critical,
+                            internal_low: levels[item].attributes.internal_low,
+                            internal_par: levels[item].attributes.internal_par,
+                            low: levels[item].attributes.low,
+                            par: levels[item].attributes.par,
+                    }
+                            
+                    component_levels.push(tmp);
+                });
+                _this.setstate({ levels: component_levels });
 
             })
             .catch(function (error) {
-                if( error.request.status == 404 ){
-                }
 
             });
+    }
+
+    getHospitalInventory = ( hospital_id ) => {
+        const _this = this;
         axios.get( '/hospital/' + this.state.hospital_id + '/inventory')
             .then(function (response) {
+                _this.setState({ inventory: response.data.data });
 
             })
             .catch(function (error) {
-                if( error.request.status == 404 ){
-                }
+                console.log(error);
             });
+    }
+
+    componentDidMount() {
+        //Do calls to the endpoints  
+        this.getHospitalInfo( this.state.hospital_id );
+
+        //Put this calls on a timer every 5 mins
+        this.getHospitalOrders( this.state.hospital_id );
+        this.getHospitalShipments( this.state.hospital_id );
+        this.getHospitalLevels( this.state.hospital_id );
+        this.getHospitalInventory( this.state.hospital_id );
 
     }
 
