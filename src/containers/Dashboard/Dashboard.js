@@ -100,6 +100,19 @@ class Dashboard extends Component {
         axios.get( '/hospital/' + this.state.hospital_id + '/inventory')
             .then(function (response) {
                 _this.setState({ inventory: response.data.data });
+                let inv = response.data.data;
+                let inventory = [];
+                Object.keys(inv).forEach(function(idx) { 
+                    let tmp = 
+                    {  
+                            unit_number: inv[idx].attributes.component.unit_number, 
+                            expiration_date: inv[idx].attributes.component.expiration_date,
+                            component_code: inv[idx].attributes.component.component_code.component_code,
+                    }
+                            
+                    inventory.push(tmp);
+                });
+                _this.setstate({ inventory: inventory });
 
             })
             .catch(function (error) {
