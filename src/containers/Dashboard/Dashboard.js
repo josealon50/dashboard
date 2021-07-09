@@ -14,6 +14,7 @@ import styles from './Dashboard.css';
 import Moment from 'react-moment';
 import shortid from 'shortid';
 import FunctionalModal from '../../components/Modal/FunctionalModal';
+import moment from 'moment';
 
 
 
@@ -26,8 +27,7 @@ class Dashboard extends Component {
         groups: null,
         num_orders: null,
         num_shipments: null,
-        not_found: false
-        
+        not_found: false,
     }
 
     showNotFoundMessage = ( show ) => {
@@ -83,11 +83,15 @@ class Dashboard extends Component {
                             internal_par: levels[item].attributes.internal_par,
                             low: levels[item].attributes.low,
                             par: levels[item].attributes.par,
+                            expiring_soon: levels[item].attributes.component_group_id.expiring_soon,
+                            remaining_life: levels[item].attributes.component_group_id.remaining_life,
+                            inventory: 0,
+                            cmv_neg: 0,
                     }
                             
-                    component_levels.push(tmp);
+                    component_levels[levels[item].attributes.component_group_id.name] = tmp;
                 });
-                _this.setstate({ levels: component_levels });
+                _this.setState({ levels: component_levels });
 
             })
             .catch(function (error) {
@@ -99,7 +103,6 @@ class Dashboard extends Component {
         const _this = this;
         axios.get( '/hospital/' + this.state.hospital_id + '/inventory')
             .then(function (response) {
-                _this.setState({ inventory: response.data.data });
                 let inv = response.data.data;
                 let inventory = [];
                 Object.keys(inv).forEach(function(idx) { 
@@ -108,11 +111,12 @@ class Dashboard extends Component {
                             unit_number: inv[idx].attributes.component.unit_number, 
                             expiration_date: inv[idx].attributes.component.expiration_date,
                             component_code: inv[idx].attributes.component.component_code.component_code,
+                            cmv_neg: inv[idx].attributes.component.special_label.id == 1,
                     }
                             
                     inventory.push(tmp);
                 });
-                _this.setstate({ inventory: inventory });
+                _this.setState({ inventory: inventory });
 
             })
             .catch(function (error) {
@@ -134,10 +138,55 @@ class Dashboard extends Component {
 
 
     render () {
-        let hospital = null
+        let hospital = null;
+        let dashboard = null;
+        let units_to_expire = [];
+
         if ( this.state.hospital ){
             hospital = <h1>{this.state.hospital.name}</h1>;
         }         
+        
+        if( this.state.inventory && this.state.levels ){
+            //Create inventory object group by component code with appropriate inventory levels
+            this.state.inventory.forEach(( cmp, idx ) => {
+                if( cmp['component_code'] in this.state.levels ){
+                    if( cmp['cmv_neg'] ){
+                        this.state.levels[cmp['component_code']].cmv_neg += 1;
+                    }
+                    else{
+                        this.state.levels[cmp['component_code']].inventory += 1;
+                    }
+
+                    //Check for expire soon components
+                    let now = moment(new Date());
+                    let expire = moment(cmp.expiration_date).add(this.state.levels[cmp['component_code']].expiring_soon, 'hours'); 
+                    let diff = moment.duration(expire.diff(now));
+                    if ( diff.asHours() < 24 ){
+                        units_to_expire.push( cmp ); 
+                    }
+                }
+                    
+            });
+
+            dashboard = 
+                <Table> 
+                    <thead>
+                        <tr>
+                            <td>Product Group</td>
+                            <td>Current Inventory</td>
+                            <td>CMV Neg</td>
+                            <td>Ship</td>
+                            <td>Projected Inv</td>
+                            <td>Exp Soon</td>
+                            <td>Par Level</td>
+                            <td>Crit Level</td>
+                        </tr>
+                    </thead>
+                </Table>
+            ;
+
+
+        }
         return (
             <React.Fragment>
                 {hospital}
