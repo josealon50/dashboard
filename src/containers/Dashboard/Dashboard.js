@@ -6,6 +6,7 @@ import { updateObject, checkValidity } from '../../shared/utility';
 import * as actions from '../../store/actions/index';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/row';
+import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/alert';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
@@ -28,6 +29,10 @@ class Dashboard extends Component {
         num_orders: null,
         num_shipments: null,
         not_found: false,
+        headers : {
+            dashboard: [ 'Product Group', 'Current Inventory', 'CMV Neg', 'Ship', 'Projected Inv', 'Exp Soon', 'Par Level', 'Crit Level' ],
+            expired: [ 'Unit number', 'Component Code', 'Expiration Date', 'Remaining Time' ]
+        }
     }
 
     showNotFoundMessage = ( show ) => {
@@ -139,11 +144,12 @@ class Dashboard extends Component {
 
     render () {
         let hospital = null;
-        let dashboard = null;
         let units_to_expire = [];
+        let body = [];
+        let hospitalName = null;
 
         if ( this.state.hospital ){
-            hospital = <h1>{this.state.hospital.name}</h1>;
+            hospitalName = this.state.hospital.name;
         }         
         
         if( this.state.inventory && this.state.levels ){
@@ -168,28 +174,77 @@ class Dashboard extends Component {
                     
             });
 
-            dashboard = 
-                <Table> 
-                    <thead>
-                        <tr>
-                            <td>Product Group</td>
-                            <td>Current Inventory</td>
-                            <td>CMV Neg</td>
-                            <td>Ship</td>
-                            <td>Projected Inv</td>
-                            <td>Exp Soon</td>
-                            <td>Par Level</td>
-                            <td>Crit Level</td>
+            for( const idx in this.state.levels ){
+                if( typeof idx !== 'undefined' ){
+                    body.push(
+                        <tr key={shortid.generate()}>
+                            <td key={shortid.generate()}>{this.state.levels[idx].component_code}</td>
+                            <td key={shortid.generate()}>{this.state.levels[idx].inventory}</td>
+                            <td key={shortid.generate()}>{this.state.levels[idx].cmv_neg}</td>
+                            <td key={shortid.generate()}>0</td>
+                            <td key={shortid.generate()}>{this.state.levels[idx].inventory + this.state.levels[idx].cmv_neg}</td>
+                            <td key={shortid.generate()}>{units_to_expire.length}</td>
+                            <td key={shortid.generate()}>{this.state.levels[idx].par}</td>
+                            <td key={shortid.generate()}>{this.state.levels[idx].critical}</td>
                         </tr>
-                    </thead>
-                </Table>
-            ;
-
-
+                    );
+                }
+            }
         }
         return (
             <React.Fragment>
-                {hospital}
+                <div style={{paddingTop: '120px'}}>
+                    <Container>
+                        <Row>
+                            <Col>
+                                <div style={{display: 'block', textAlign: 'center'}}>
+                                    <h4>{hospitalName}</h4>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <h4 style={{float: 'left'}}>Orders: {this.state.num_orders}  Shipments: {this.state.num_shipments}</h4>
+                                <h4 style={{float: 'right'}}>Units To Expire</h4>
+                            </Col>
+                        </Row>
+                    </Container>
+                    <Container>
+                        <Row className="justify-content-md-center">
+                            <Col>
+                                <Table responsive>
+                                    <thead>
+                                        <tr key={shortid.generate()}>
+                                            { this.state.headers.dashboard.map((header, index) => (
+                                                <th key={shortid.generate()}>{header}</th>))
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {body}
+                                    </tbody>
+                                </Table>
+                            </Col>
+                            <Col>
+                                <Row>
+                                    <Col>
+                                        <Table responsive>
+                                            <thead>
+                                                <tr key={shortid.generate()}>
+                                                    { this.state.headers.expired.map((header, index) => (
+                                                        <th key={shortid.generate()}>{header}</th>))
+                                                    }
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </Table>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
             </React.Fragment>
         );
     }
