@@ -15,6 +15,7 @@ import styles from './Dashboard.css';
 import Moment from 'react-moment';
 import shortid from 'shortid';
 import FunctionalModal from '../../components/Modal/FunctionalModal';
+import Badge from 'react-bootstrap/Badge';
 import moment from 'moment';
 
 
@@ -30,7 +31,7 @@ class Dashboard extends Component {
         num_shipments: null,
         not_found: false,
         headers : {
-            dashboard: [ 'Product Group', 'Current Inventory', 'CMV Neg', 'Ship', 'Projected Inv', 'Exp Soon', 'Par Level', 'Crit Level' ],
+            dashboard: [ 'Product Group', 'Current Inv', 'CMV Neg', 'Ship', 'Proj Inv', 'Exp Soon', 'Par Level', 'Crit Level' ],
             expired: [ 'Unit number', 'Component Code', 'Expiration Date', 'Remaining Time' ]
         }
     }
@@ -146,10 +147,13 @@ class Dashboard extends Component {
         let hospital = null;
         let units_to_expire = [];
         let body = [];
+        let expired = [];
         let hospitalName = null;
+        let lastDataRefresh = null;
 
         if ( this.state.hospital ){
             hospitalName = this.state.hospital.name;
+            lastDataRefresh = <Moment format="MM-DD-YYYY HH:MM:SS">{this.state.hospital.last_data_refresh}</Moment>;
         }         
         
         if( this.state.inventory && this.state.levels ){
@@ -167,7 +171,7 @@ class Dashboard extends Component {
                     let now = moment(new Date());
                     let expire = moment(cmp.expiration_date).add(this.state.levels[cmp['component_code']].expiring_soon, 'hours'); 
                     let diff = moment.duration(expire.diff(now));
-                    if ( diff.asHours() < 24 ){
+                    if ( diff.asHours() < 100 ){
                         units_to_expire.push( cmp ); 
                     }
                 }
@@ -190,6 +194,19 @@ class Dashboard extends Component {
                     );
                 }
             }
+
+            for( const idx in units_to_expire ){
+                if( typeof idx !== 'undefined' ){
+                    expired.push(
+                        <tr key={shortid.generate()}>
+                            <td key={shortid.generate()}>{units_to_expire[idx].unit_number}</td>
+                            <td key={shortid.generate()}>{units_to_expire[idx].component_code}</td>
+                            <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{units_to_expire[idx].expiration_date}</Moment></td>
+                            <td key={shortid.generate()}>0</td>
+                        </tr>
+                    );
+                }
+            }
         }
         return (
             <React.Fragment>
@@ -204,15 +221,23 @@ class Dashboard extends Component {
                         </Row>
                         <Row>
                             <Col>
+                                <div style={{display: 'block', textAlign: 'center'}}>
+                                    <h4>Last Inventory Data Refresh: {lastDataRefresh}</h4>
+                                </div>
+                            </Col>
+
+                        </Row>
+                        <Row>
+                            <Col>
                                 <h4 style={{float: 'left'}}>Orders: {this.state.num_orders}  Shipments: {this.state.num_shipments}</h4>
                                 <h4 style={{float: 'right'}}>Units To Expire</h4>
                             </Col>
                         </Row>
                     </Container>
                     <Container>
-                        <Row className="justify-content-md-center">
-                            <Col>
-                                <Table responsive>
+                        <Row>
+                            <Col xl='3'>
+                                <Table bordered responsive>
                                     <thead>
                                         <tr key={shortid.generate()}>
                                             { this.state.headers.dashboard.map((header, index) => (
@@ -224,23 +249,45 @@ class Dashboard extends Component {
                                         {body}
                                     </tbody>
                                 </Table>
+                                <Table responsive>
+                                    <tbody>
+                                        <tr>
+                                            <td style={{width: 'auto', border: 'none',heigth: '70%'}}>
+                                                <Badge style={{margin: '5px'}} pill pill variant="success">Adequate Level </Badge>
+                                                <Badge style={{margin: '5px'}} pill variant="warning">Caution </Badge>
+                                                <Badge style={{margin: '5px'}} pill variant="danger">Critical Level </Badge>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
                             </Col>
-                            <Col>
-                                <Row>
-                                    <Col>
-                                        <Table responsive>
-                                            <thead>
-                                                <tr key={shortid.generate()}>
-                                                    { this.state.headers.expired.map((header, index) => (
-                                                        <th key={shortid.generate()}>{header}</th>))
-                                                    }
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </Table>
-                                    </Col>
-                                </Row>
+                            <Col xl='3'>
+                                <Table bordered responsive>
+                                    <thead>
+                                        <tr key={shortid.generate()}>
+                                            { this.state.headers.expired.map((header, index) => (
+                                                <th key={shortid.generate()}>{header}</th>))
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {expired}
+                                    </tbody>
+                                </Table>
+                            </Col>
+                            <Col xl='3'>
+                                <Table bordered responsive>
+                                    <thead>
+                                        <tr key={shortid.generate()}>
+                                            { this.state.headers.expired.map((header, index) => (
+                                                <th key={shortid.generate()}>{header}</th>))
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {expired}
+                                    </tbody>
+                                </Table>
                             </Col>
                         </Row>
                     </Container>
