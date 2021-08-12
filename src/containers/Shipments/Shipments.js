@@ -193,11 +193,10 @@ class Shipments extends Component {
 
 const mapStateToProps = state => {
     return {
-        access_token: state.auth.token,
-        isAuthenticated: state.auth.token !== null,
+        access_token: state.auth.access_token,
+        isAuthenticated: state.auth.access_token !== null,
         error: state.auth.error,
         error_msg : state.auth.error_msg,
-        authRedirectPath: state.auth.authRedirectPath
     };
 };
 

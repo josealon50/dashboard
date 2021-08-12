@@ -36,16 +36,20 @@ const asyncAlerts = asyncComponent(() => {
     return import('./containers/Alerts/Alerts');
 });
 
+const asyncDashboard = asyncComponent(() => {
+    return import('./containers/Dashboard/Dashboard');
+});
+
 class App extends Component {
     componentDidMount() {
-        this.props.onCheckAuthCheckState();
+        //this.props.onCheckAuthCheckState();
     }
     
     render () {
         let routes = (
                 <Switch>
+                    <Route path="/dashboard/:id" component={asyncDashboard} />
                     <Route path="/" component={asyncAuth} />
-                    <Redirect to="/auth" />
                 </Switch>
         );
 
