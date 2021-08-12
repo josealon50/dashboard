@@ -74,55 +74,23 @@ class Dashboard extends Component {
             });
     }
 
-    getHospitalLevels = ( hospital_id ) => {
-        const _this = this;
-        axios.get( '/hospital/' + this.state.hospital_id + '/levels')
-            .then(function (response) {
-                let levels = response.data.data;
-                let component_levels = [];
-                Object.keys(levels).forEach(function(item) { 
-                    let tmp = 
-                    {  
-                            component_code: levels[item].attributes.component_group_id.name, 
-                            critical: levels[item].attributes.critical,
-                            internal_low: levels[item].attributes.internal_low,
-                            internal_par: levels[item].attributes.internal_par,
-                            low: levels[item].attributes.low,
-                            par: levels[item].attributes.par,
-                            expiring_soon: levels[item].attributes.component_group_id.expiring_soon,
-                            remaining_life: levels[item].attributes.component_group_id.remaining_life,
-                            inventory: 0,
-                            cmv_neg: 0,
-                    }
-                            
-                    component_levels[levels[item].attributes.component_group_id.name] = tmp;
-                });
-                _this.setState({ levels: component_levels });
-
-            })
-            .catch(function (error) {
-
-            });
-    }
-
     getHospitalInventory = ( hospital_id ) => {
         const _this = this;
         axios.get( '/hospital/' + this.state.hospital_id + '/inventory')
             .then(function (response) {
-                let inv = response.data.data;
-                let inventory = [];
-                Object.keys(inv).forEach(function(idx) { 
-                    let tmp = 
-                    {  
-                            unit_number: inv[idx].attributes.component.unit_number, 
-                            expiration_date: inv[idx].attributes.component.expiration_date,
-                            component_code: inv[idx].attributes.component.component_code.component_code,
-                            cmv_neg: inv[idx].attributes.component.special_label.id == 1,
-                    }
-                            
-                    inventory.push(tmp);
-                });
-                _this.setState({ inventory: inventory });
+                _this.setState({ inventory: response.data });
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    getHospitalComponentsAboutToExpire = ( hospital_id ) => {
+        const _this = this;
+        axios.get( '/hospital/' + this.state.hospital_id + '/components/expired')
+            .then(function (response) {
+                _this.setState({ units_to_expire: response.data });
 
             })
             .catch(function (error) {
@@ -137,8 +105,8 @@ class Dashboard extends Component {
         //Put this calls on a timer every 5 mins
         this.getHospitalOrders( this.state.hospital_id );
         this.getHospitalShipments( this.state.hospital_id );
-        this.getHospitalLevels( this.state.hospital_id );
         this.getHospitalInventory( this.state.hospital_id );
+        this.getHospitalComponentsAboutToExpire( this.state.hospital_id );
 
     }
 
@@ -156,56 +124,31 @@ class Dashboard extends Component {
             lastDataRefresh = <Moment format="MM-DD-YYYY HH:MM:SS">{this.state.hospital.last_data_refresh}</Moment>;
         }         
         
-        if( this.state.inventory && this.state.levels ){
-            //Create inventory object group by component code with appropriate inventory levels
-            this.state.inventory.forEach(( cmp, idx ) => {
-                if( cmp['component_code'] in this.state.levels ){
-                    if( cmp['cmv_neg'] ){
-                        this.state.levels[cmp['component_code']].cmv_neg += 1;
-                    }
-                    else{
-                        this.state.levels[cmp['component_code']].inventory += 1;
-                    }
-
-                    //Check for expire soon components
-                    let now = moment(new Date());
-                    let expire = moment(cmp.expiration_date).add(this.state.levels[cmp['component_code']].expiring_soon, 'hours'); 
-                    let diff = moment.duration(expire.diff(now));
-                    if ( diff.asHours() < 100 ){
-                        units_to_expire.push( cmp ); 
-                    }
-                }
-                    
-            });
-
-            for( const idx in this.state.levels ){
-                if( typeof idx !== 'undefined' ){
-                    body.push(
-                        <tr key={shortid.generate()}>
-                            <td key={shortid.generate()}>{this.state.levels[idx].component_code}</td>
-                            <td key={shortid.generate()}>{this.state.levels[idx].inventory}</td>
-                            <td key={shortid.generate()}>{this.state.levels[idx].cmv_neg}</td>
-                            <td key={shortid.generate()}>0</td>
-                            <td key={shortid.generate()}>{this.state.levels[idx].inventory + this.state.levels[idx].cmv_neg}</td>
-                            <td key={shortid.generate()}>{units_to_expire.length}</td>
-                            <td key={shortid.generate()}>{this.state.levels[idx].par}</td>
-                            <td key={shortid.generate()}>{this.state.levels[idx].critical}</td>
-                        </tr>
-                    );
-                }
+        if( this.state.inventory && this.state.units_to_expire ){
+            for( const idx in this.state.inventory.data ){
+                body.push(
+                    <tr key={shortid.generate()}>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.group_name}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.inventory}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.cmv_neg}</td>
+                        <td key={shortid.generate()}>0</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.inventory}</td>
+                        <td key={shortid.generate()}>{this.state.units_to_expire.length}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.par}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.critical}</td>
+                    </tr>
+                );
             }
 
-            for( const idx in units_to_expire ){
-                if( typeof idx !== 'undefined' ){
-                    expired.push(
-                        <tr key={shortid.generate()}>
-                            <td key={shortid.generate()}>{units_to_expire[idx].unit_number}</td>
-                            <td key={shortid.generate()}>{units_to_expire[idx].component_code}</td>
-                            <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{units_to_expire[idx].expiration_date}</Moment></td>
-                            <td key={shortid.generate()}>0</td>
-                        </tr>
-                    );
-                }
+            for( const idx in this.state.units_to_expire.data ){
+                expired.push(
+                    <tr key={shortid.generate()}>
+                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.unit_number}</td>
+                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.component_code.component_code}</td>
+                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{this.state.units_to_expire.data[idx].attributes.expiration_date}</Moment></td>
+                        <td key={shortid.generate()}><Moment diff={new Date()} unit="hours">{this.state.units_to_expire.data[idx].attributes.expiration_date}</Moment></td>
+                    </tr>
+                );
             }
         }
         return (
