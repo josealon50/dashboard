@@ -133,7 +133,7 @@ class Dashboard extends Component {
                         <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.cmv_neg}</td>
                         <td key={shortid.generate()}>0</td>
                         <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.inventory}</td>
-                        <td key={shortid.generate()}>{this.state.units_to_expire.length}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.expired}</td>
                         <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.par}</td>
                         <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.critical}</td>
                     </tr>
@@ -179,7 +179,7 @@ class Dashboard extends Component {
                     </Container>
                     <Container>
                         <Row>
-                            <Col xl='3'>
+                            <Col xl='6'>
                                 <Table bordered responsive>
                                     <thead>
                                         <tr key={shortid.generate()}>
@@ -204,21 +204,7 @@ class Dashboard extends Component {
                                     </tbody>
                                 </Table>
                             </Col>
-                            <Col xl='3'>
-                                <Table bordered responsive>
-                                    <thead>
-                                        <tr key={shortid.generate()}>
-                                            { this.state.headers.expired.map((header, index) => (
-                                                <th key={shortid.generate()}>{header}</th>))
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {expired}
-                                    </tbody>
-                                </Table>
-                            </Col>
-                            <Col xl='3'>
+                            <Col xl='6'>
                                 <Table bordered responsive>
                                     <thead>
                                         <tr key={shortid.generate()}>
