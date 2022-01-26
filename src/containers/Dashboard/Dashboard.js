@@ -5,9 +5,9 @@ import { Redirect } from 'react-router-dom';
 import { updateObject, checkValidity } from '../../shared/utility';
 import * as actions from '../../store/actions/index';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/row';
+import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Alert from 'react-bootstrap/alert';
+import Alert from 'react-bootstrap/Alert';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import axios from '../../axios-dashboard';
@@ -124,29 +124,32 @@ class Dashboard extends Component {
             lastDataRefresh = <Moment format="MM-DD-YYYY HH:MM:SS">{this.state.hospital.last_data_refresh}</Moment>;
         }         
         
-        if( this.state.inventory && this.state.units_to_expire ){
+        if( this.state.inventory  ){
             for( const idx in this.state.inventory.data ){
                 body.push(
                     <tr key={shortid.generate()}>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.group_name}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.inventory}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.cmv_neg}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].group_name}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].units_available}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].cmv_neg}</td>
                         <td key={shortid.generate()}>0</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.inventory}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.expired}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.par}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].attributes.critical}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].units_available}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].soon_to_expired}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].par}</td>
+                        <td key={shortid.generate()}>{this.state.inventory.data[idx].critical}</td>
                     </tr>
                 );
             }
 
+        }
+
+        if( this.state.units_to_expire ){
             for( const idx in this.state.units_to_expire.data ){
                 expired.push(
                     <tr key={shortid.generate()}>
-                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.unit_number}</td>
-                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.component_code.component_code}</td>
-                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{this.state.units_to_expire.data[idx].attributes.expiration_date}</Moment></td>
-                        <td key={shortid.generate()}><Moment diff={new Date()} unit="hours">{this.state.units_to_expire.data[idx].attributes.expiration_date}</Moment></td>
+                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].unit_number}</td>
+                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].component_code}</td>
+                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{this.state.units_to_expire.data[idx].expiration_date}</Moment></td>
+                        <td key={shortid.generate()}><Moment diff={new Date()} unit="hours">{this.state.units_to_expire.data[idx].expiration_date}</Moment></td>
                     </tr>
                 );
             }

@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions/index';
 import { updateObject, checkValidity } from '../../shared/utility';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/row';
+import Row from 'react-bootstrap/Row';
 import ListGroup from 'react-bootstrap/ListGroup'
 import './Landing.css';
 import axios from '../../axios-dashboard';
