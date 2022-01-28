@@ -146,10 +146,10 @@ class Dashboard extends Component {
             for( const idx in this.state.units_to_expire.data ){
                 expired.push(
                     <tr key={shortid.generate()}>
-                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].unit_number}</td>
-                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].component_code}</td>
-                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{this.state.units_to_expire.data[idx].expiration_date}</Moment></td>
-                        <td key={shortid.generate()}><Moment diff={new Date()} unit="hours">{this.state.units_to_expire.data[idx].expiration_date}</Moment></td>
+                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.component.unit_number}</td>
+                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.component.component_code.component_code}</td>
+                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{this.state.units_to_expire.data[idx].attributes.component.expiration_date}</Moment></td>
+                        <td key={shortid.generate()}><Moment diff={new Date()} unit="hours">{this.state.units_to_expire.data[idx].attributes.component.expiration_date}</Moment></td>
                     </tr>
                 );
             }
