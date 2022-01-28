@@ -118,10 +118,11 @@ class Dashboard extends Component {
         let expired = [];
         let hospitalName = null;
         let lastDataRefresh = null;
+        let date = null;
 
         if ( this.state.hospital ){
             hospitalName = this.state.hospital.name;
-            lastDataRefresh = <Moment format="MM-DD-YYYY HH:MM:SS">{this.state.hospital.last_data_refresh}</Moment>;
+            lastDataRefresh = <Moment format="MM-DD-YYYY hh:mm:ss">{moment(this.state.hospital.last_data_refresh).local()}</Moment>;
         }         
         
         if( this.state.inventory  ){
@@ -148,7 +149,7 @@ class Dashboard extends Component {
                     <tr key={shortid.generate()}>
                         <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.component.unit_number}</td>
                         <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.component.component_code.component_code}</td>
-                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY HH:MM:SS">{this.state.units_to_expire.data[idx].attributes.component.expiration_date}</Moment></td>
+                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY hh:mm:ss">{moment(this.state.units_to_expire.data[idx].attributes.component.expiration_date).local()}</Moment></td>
                         <td key={shortid.generate()}><Moment diff={new Date()} unit="hours">{this.state.units_to_expire.data[idx].attributes.component.expiration_date}</Moment></td>
                     </tr>
                 );
