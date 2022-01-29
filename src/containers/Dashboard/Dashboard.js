@@ -122,7 +122,7 @@ class Dashboard extends Component {
 
         if ( this.state.hospital ){
             hospitalName = this.state.hospital.name;
-            lastDataRefresh = <Moment format="MM-DD-YYYY hh:mm:ss">{moment(this.state.hospital.last_data_refresh).local()}</Moment>;
+            lastDataRefresh = <Moment format="MM-DD-YYYY hh:mm:ss">{moment.utc(this.state.hospital.last_data_refresh)}</Moment>;
         }         
         
         if( this.state.inventory  ){
