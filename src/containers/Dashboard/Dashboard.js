@@ -55,7 +55,7 @@ class Dashboard extends Component {
         const _this = this;
         axios.get( '/hospital/' + this.state.hospital_id + '/orders')
             .then(function (response) {
-                _this.setState({ num_orders: response.data.data.length });
+                _this.setState({ num_orders: response.data.data.num_orders });
             })
             .catch(function (error) {
 
@@ -66,7 +66,7 @@ class Dashboard extends Component {
         const _this = this;
         axios.get( '/hospital/' + this.state.hospital_id + '/shipments')
             .then(function (response) {
-                _this.setState({ num_shipments: response.data.data.length });
+                _this.setState({ num_shipments: response.data.data.num_shipments });
 
             })
             .catch(function (error) {
