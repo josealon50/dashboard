@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Inventory from '../Inventory/Inventory';
+import Expired from '../Expired/Expired';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Redirect } from 'react-router-dom';
@@ -73,16 +74,15 @@ class Dashboard extends Component {
             });
     }
 
-
-    getHospitalComponentsAboutToExpire = ( hospital_id ) => {
+    getHospitalShipments = ( hospital_id ) => {
         const _this = this;
-        axios.get( '/hospital/' + this.state.hospital_id + '/components/expired')
+        axios.get( '/hospital/' + this.state.hospital_id + '/shipments')
             .then(function (response) {
-                _this.setState({ units_to_expire: response.data });
+                _this.setState({ num_shipments: response.data.data.num_shipments });
 
             })
             .catch(function (error) {
-                console.log(error);
+
             });
     }
 
@@ -93,15 +93,12 @@ class Dashboard extends Component {
         //Put this calls on a timer every 5 mins
         this.getHospitalOrders( this.state.hospital_id );
         this.getHospitalShipments( this.state.hospital_id );
-        this.getHospitalComponentsAboutToExpire( this.state.hospital_id );
 
     }
 
 
     render () {
         let hospital = null;
-        let units_to_expire = [];
-        let expired = [];
         let hospitalName = null;
         let lastDataRefresh = null;
         let date = null;
@@ -111,18 +108,6 @@ class Dashboard extends Component {
             lastDataRefresh = <Moment format="MM-DD-YYYY hh:mm:ss">{moment.utc(this.state.hospital.last_data_refresh)}</Moment>;
         }         
 
-        if( this.state.units_to_expire ){
-            for( const idx in this.state.units_to_expire.data ){
-                expired.push(
-                    <tr key={shortid.generate()}>
-                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.component.unit_number}</td>
-                        <td key={shortid.generate()}>{this.state.units_to_expire.data[idx].attributes.component.component_code.component_code}</td>
-                        <td key={shortid.generate()}><Moment format="MM-DD-YYYY hh:mm:ss">{moment(this.state.units_to_expire.data[idx].attributes.component.expiration_date).local()}</Moment></td>
-                        <td key={shortid.generate()}><Moment diff={new Date()} unit="hours">{this.state.units_to_expire.data[idx].attributes.component.expiration_date}</Moment></td>
-                    </tr>
-                );
-            }
-        }
         return (
             <React.Fragment>
                 <div style={{paddingTop: '120px'}}>
@@ -155,18 +140,7 @@ class Dashboard extends Component {
                                 <Inventory hospital_id={this.state.hospital_id}/>
                             </Col>
                             <Col xl='6'>
-                                <Table bordered responsive>
-                                    <thead>
-                                        <tr key={shortid.generate()}>
-                                            { this.state.headers.expired.map((header, index) => (
-                                                <th key={shortid.generate()}>{header}</th>))
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {expired}
-                                    </tbody>
-                                </Table>
+                                <Expired hospital_id={this.state.hospital_id}/>
                             </Col>
                         </Row>
                     </Container>
