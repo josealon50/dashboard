@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Inventory from '../Inventory/Inventory';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Redirect } from 'react-router-dom';
@@ -24,14 +25,12 @@ class Dashboard extends Component {
     state = {
         hospital_id: this.props.match.params.id,
         hospital : null,
-        inventory: null,
         levels: null,
         groups: null,
         num_orders: null,
         num_shipments: null,
         not_found: false,
         headers : {
-            dashboard: [ 'Product Group', 'Current Inv', 'CMV Neg', 'Ship', 'Proj Inv', 'Exp Soon', 'Par Level', 'Crit Level' ],
             expired: [ 'Unit number', 'Component Code', 'Expiration Date', 'Remaining Time' ]
         }
     }
@@ -74,17 +73,6 @@ class Dashboard extends Component {
             });
     }
 
-    getHospitalInventory = ( hospital_id ) => {
-        const _this = this;
-        axios.get( '/hospital/' + this.state.hospital_id + '/inventory')
-            .then(function (response) {
-                _this.setState({ inventory: response.data });
-
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
 
     getHospitalComponentsAboutToExpire = ( hospital_id ) => {
         const _this = this;
@@ -105,7 +93,6 @@ class Dashboard extends Component {
         //Put this calls on a timer every 5 mins
         this.getHospitalOrders( this.state.hospital_id );
         this.getHospitalShipments( this.state.hospital_id );
-        this.getHospitalInventory( this.state.hospital_id );
         this.getHospitalComponentsAboutToExpire( this.state.hospital_id );
 
     }
@@ -114,7 +101,6 @@ class Dashboard extends Component {
     render () {
         let hospital = null;
         let units_to_expire = [];
-        let body = [];
         let expired = [];
         let hospitalName = null;
         let lastDataRefresh = null;
@@ -124,24 +110,6 @@ class Dashboard extends Component {
             hospitalName = this.state.hospital.name;
             lastDataRefresh = <Moment format="MM-DD-YYYY hh:mm:ss">{moment.utc(this.state.hospital.last_data_refresh)}</Moment>;
         }         
-        
-        if( this.state.inventory  ){
-            for( const idx in this.state.inventory.data ){
-                body.push(
-                    <tr key={shortid.generate()}>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].group_name}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].units_available}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].cmv_neg}</td>
-                        <td key={shortid.generate()}>0</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].units_available}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].soon_to_expired}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].par}</td>
-                        <td key={shortid.generate()}>{this.state.inventory.data[idx].critical}</td>
-                    </tr>
-                );
-            }
-
-        }
 
         if( this.state.units_to_expire ){
             for( const idx in this.state.units_to_expire.data ){
@@ -184,29 +152,7 @@ class Dashboard extends Component {
                     <Container>
                         <Row>
                             <Col xl='6'>
-                                <Table bordered responsive>
-                                    <thead>
-                                        <tr key={shortid.generate()}>
-                                            { this.state.headers.dashboard.map((header, index) => (
-                                                <th key={shortid.generate()}>{header}</th>))
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {body}
-                                    </tbody>
-                                </Table>
-                                <Table responsive>
-                                    <tbody>
-                                        <tr>
-                                            <td style={{width: 'auto', border: 'none',heigth: '70%'}}>
-                                                <Badge style={{margin: '5px'}} pill pill variant="success">Adequate Level </Badge>
-                                                <Badge style={{margin: '5px'}} pill variant="warning">Caution </Badge>
-                                                <Badge style={{margin: '5px'}} pill variant="danger">Critical Level </Badge>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
+                                <Inventory hospital_id={this.state.hospital_id}/>
                             </Col>
                             <Col xl='6'>
                                 <Table bordered responsive>
