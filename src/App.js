@@ -40,6 +40,10 @@ const asyncDashboard = asyncComponent(() => {
     return import('./containers/Dashboard/Dashboard');
 });
 
+const asyncGroups = asyncComponent(() => {
+    return import('./containers/Groups/Groups');
+});
+
 class App extends Component {
     componentDidMount() {
         //this.props.onCheckAuthCheckState();
@@ -61,6 +65,7 @@ class App extends Component {
                     <Route path="/orders" exact component={asyncOrders}/> 
                     <Route path="/shipments" exact component={asyncShipments}/> 
                     <Route path="/alerts" exact component={asyncAlerts}/> 
+                    <Route path="/groups" exact component={asyncGroups}/> 
                     <Route path="/logout" exact component={Logout}/> 
                     <Route path="/" exact component={asyncAuth} />
                     <Redirect to="/me" />
