@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Inventory from '../Inventory/Inventory';
 import Expired from '../Expired/Expired';
+import Alert from '../Alerts/Inventory/Alert';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Redirect } from 'react-router-dom';
@@ -112,6 +113,7 @@ class Dashboard extends Component {
             <React.Fragment>
                 <div style={{paddingTop: '120px'}}>
                     <Container>
+                        <Alert hospital_id={this.state.params.hospital_id} />
                         <Row>
                             <Col>
                                 <div style={{display: 'block', textAlign: 'center'}}>
