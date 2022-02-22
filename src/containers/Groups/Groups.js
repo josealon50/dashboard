@@ -34,7 +34,7 @@ class Groups extends Component {
         showModal : false,
         headers:  {
             main : [ 'Group Name', 'Default', 'Remaining Life', 'Expiring Soon' ],
-            component_code : [ 'Abbreviation', 'Component Code', 'Group', 'Delete' ]
+            component_code : [ 'Component Code', 'Description' ]
         }
 
     }
@@ -83,7 +83,7 @@ class Groups extends Component {
             axios.get( '/component/groups/' + id, { headers : { Authorization: 'Bearer ' + this.props.access_token }})
                 .then(function (response) {
                     //_this.props.onAlertGetSuccess();
-                    _this.setState({ ..._this.state, component_group_name: name, group_component_codes: response.data, pagination: response.data.links });
+                    _this.setState({ ..._this.state, component_group_name: name, component_group_codes: response.data, pagination: response.data.links });
                     _this.setModalShow( true );
                 }
             )
@@ -120,6 +120,7 @@ class Groups extends Component {
         }
         let hospitalName = null;
         let body = [];
+        let modal = [];
         let next = null;
         let prev = null;
         if( this.state.groups.data.length > 0 ){
@@ -135,26 +136,40 @@ class Groups extends Component {
                 );
 
             })
-            /*
-            if ( this.state.pagination.next ) {
-                next = <Button style={{display: 'flex', justifyContent: 'flex-end', margin: '2px' }} onClick={() => this.onGetPage(this.state.pagination.next)} type='button'>Previous</Button> ;
-            }
-            if ( this.state.pagination.prev ){
-                prev = <Button style={{display: 'flex', justifyContent: 'flex-end', margin: '2px'}} onClick={() => this.onGetPage(this.state.pagination.prev)} type='button'>Next</Button> ;
-            }
-            */
 
+        }
+        if( this.state.component_group_codes.data.length > 0 ){
+            this.state.component_group_codes.data.forEach((code, index) => {
+                modal.push(
+                    <tr className='groups' key={shortid.generate()} >
+                        <td key={shortid.generate()}>{code.attributes.component_code.component_code}</td>
+                        <td key={shortid.generate()}>{code.attributes.component_code.description}</td>
+                    </tr>
+                );
+
+            })
         }
 
         return (
             <React.Fragment>
                 {errorMessage}
-                <Modal show={this.state.showModal} onHide={ () => this.setModalShow(false) } backdrop="true">
+                <Modal show={this.state.showModal} onHide={ () => this.setModalShow(false) } backdrop="true" size="lg">
                     <Modal.Header closeButton>
                         <Modal.Title>{this.state.component_group_name}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Body
+                        <Table responsive>
+                            <thead>
+                                <tr key={shortid.generate()}>
+                                    { this.state.headers.component_code.map((header, index) => (
+                                        <th key={shortid.generate()}>{header}</th>))
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {modal}
+                            </tbody>
+                        </Table>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={ () => this.setModalShow(false)}>Close</Button>
