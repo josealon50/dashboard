@@ -45,12 +45,14 @@ class Landing extends Component {
                 'active' : false,
                 'href' : 'users'
             },
+            /*
             'phenotypes' : {
                 'name' : 'Phenotypes',
                 'img' : 'search',
                 'active' : false,
                 'href' : 'phenotypes'
             },
+            */
             'orders' : {
                 'name' : 'Orders',
                 'img' : "receipt",
@@ -62,7 +64,13 @@ class Landing extends Component {
                 'img' : "chart-line",
                 'active' : false,
                 'href' : 'dashboards'
-            }
+            },
+            'groups' : {
+                'name' : 'Component Groups',
+                'img' : 'truck',
+                'active' : false,
+                'href' : 'groups'
+            },
         }
     }
 
