@@ -13,6 +13,7 @@ import Button from 'react-bootstrap/Button';
 import axios from '../../axios-dashboard';
 import Moment from 'react-moment';
 import shortid from 'shortid';
+import moment from 'moment';
 
 
 
@@ -136,7 +137,7 @@ class Alerts extends Component {
                         <td key={shortid.generate()}>{halert.attributes.component.component_code.component_code}</td>
                         <td key={shortid.generate()}>{halert.attributes.alert.alert}</td>
                         <td key={shortid.generate()}>{halert.attributes.cleared_by}</td>
-                        <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY HH:MM:SS">{halert.attributes.cleared_on}</Moment> : ''}</td>
+                        <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY hh:mm">{moment(halert.attributes.cleared_on).local()}</Moment> : ''}</td>
                         <td key={shortid.generate()}>{!halert.attributes.cleared_by ? <Button variant="success" onClick={() => this.clearHospitalAlert(halert.id)}>Clear</Button> : null}</td>
                     </tr>
                 );
