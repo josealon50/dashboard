@@ -38,17 +38,24 @@ class Alerts extends Component {
     componentDidMount() {
         if( this.props.isAuthenticated ){
             this.props.onAlertGetStart();
-            const _this = this;
-
-            axios.get( '/alerts', { headers : { Authorization: 'Bearer ' + this.props.access_token }})
-                .then(function (response) {
-                    _this.props.onAlertGetSuccess();
-                    _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
-                })
-                .catch(function (error) {
-                    _this.props.onAlertGetFail("Unauthorized") ;
-                });
+            this.getHospitalAlerts();
         }
+
+    }
+
+    getHospitalAlerts() {
+        const _this = this;
+
+        axios.get( '/alerts', { headers : { Authorization: 'Bearer ' + this.props.access_token }})
+            .then(function (response) {
+                _this.props.onAlertGetSuccess();
+                _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
+            }
+        )
+            .catch(function (error) {
+                _this.props.onAlertGetFail("Unauthorized") ;
+            }
+        );
     }
 
 
@@ -82,7 +89,8 @@ class Alerts extends Component {
             axios.put( '/alert/' + id + '/clear', null, { headers : { Authorization: 'Bearer ' + this.props.access_token }})
                 .then(function (response) {
                     _this.props.onAlertGetSuccess();
-                    _this.setState({ ..._this.state, setModalShow: false })
+                    _this.setState({ ..._this.state, showModal: false })
+                    _this.getHospitalAlerts();
 
                 })
                 .catch(function (error) {
