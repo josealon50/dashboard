@@ -30,7 +30,7 @@ class Alerts extends Component {
         alertId : '',
         showModal : false,
         headers:  {
-            main : [ 'Unit Number', 'Component Code', 'Component Group', 'Blood Type','Cleared By', 'Cleared On', '' ],
+            main : [ 'Unit Number', 'Component Code', 'Alert', 'Cleared By', 'Cleared On', '' ],
         }
 
     }
@@ -134,8 +134,7 @@ class Alerts extends Component {
                     <tr key={shortid.generate()}>
                         <td key={shortid.generate()}>{halert.attributes.component.unit_number}</td>
                         <td key={shortid.generate()}>{halert.attributes.component.component_code.component_code}</td>
-                        <td key={shortid.generate()}>{halert.attributes.component.component_code.group}</td>
-                        <td key={shortid.generate()}>{halert.attributes.component.blood_type_id.blood_type}</td>
+                        <td key={shortid.generate()}>{halert.attributes.alert.alert}</td>
                         <td key={shortid.generate()}>{halert.attributes.cleared_by}</td>
                         <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY HH:MM:SS">{halert.attributes.cleared_on}</Moment> : ''}</td>
                         <td key={shortid.generate()}>{!halert.attributes.cleared_by ? <Button variant="success" onClick={() => this.clearHospitalAlert(halert.id)}>Clear</Button> : null}</td>
