@@ -17,7 +17,7 @@ export const alertGetFail = ( error ) => {
     return {
         type: actionTypes.ALERT_GET_FAIL,
         error: true,
-        error_msg: error.error_msg
+        error_msg: error
     };
 };
 

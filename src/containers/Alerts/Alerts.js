@@ -32,7 +32,7 @@ class Alerts extends Component {
         showModal : false,
         headers:  {
             main : [ 'Unit Number', 'Component Code', 'Alert', 'Cleared By', 'Cleared On', '' ],
-        }
+        },
 
     }
 
@@ -51,12 +51,17 @@ class Alerts extends Component {
             .then(function (response) {
                 _this.props.onAlertGetSuccess();
                 _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
-            }
-        )
+            })
             .catch(function (error) {
-                _this.props.onAlertGetFail("Unauthorized") ;
-            }
-        );
+                if ( error.request.status == 401 ){
+                    //_this.props.onAuthFail("Unauthorized") ;
+                    _this.props.onAuthFail("Session Has Expired. Please log back in.") ;
+                    _this.props.onAlertFailHandle();
+                    _this.setState({ ..._this.state, setModalShow: false });
+                    _this.props.onLogout();
+                }
+            
+            });
     }
 
 
@@ -74,8 +79,9 @@ class Alerts extends Component {
                     _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
                 })
                 .catch(function (error) {
-                    if( error.request.status == 401 ){
-                        _this.onAlertGetFail("Unauthorized");
+                    if ( error.request.status == 401 ){
+                        _this.props.onAuthFail("Unauthorized") ;
+                        _this.setState({ ..._this.state, setModalShow: false});
                     }
                 });
         }
@@ -95,8 +101,10 @@ class Alerts extends Component {
 
                 })
                 .catch(function (error) {
-                    _this.props.onAlertGetFail("Unauthorized") ;
-                    _this.setState({ ..._this.state, setModalShow: false});
+                    if ( error.request.status == 401 ){
+                        _this.props.onAuthFail("Unauthorized") ;
+                        _this.setState({ ..._this.state, setModalShow: false});
+                    }
                 });
         }
     }
@@ -113,6 +121,11 @@ class Alerts extends Component {
 
     render () {
         let redirect = null;
+        let hospitalName = null;
+        let body = [];
+        let next = null;
+        let prev = null;
+
         if ( !this.props.isAuthenticated ) {
             redirect = <Redirect to='/' />
         }
@@ -123,10 +136,6 @@ class Alerts extends Component {
             errorMessage = <Alert style={{zIndex:99999}}  show={this.props.error} onClose={this.onCloseErrorAlert} dismissible variant="danger">{this.props.error_msg}</Alert>;
 
         }
-        let hospitalName = null;
-        let body = [];
-        let next = null;
-        let prev = null;
         if( this.state.alerts.data.length > 0 ){
             hospitalName = this.state.alerts.data[0].attributes.hospital.name + " Alerts ";
 
@@ -154,6 +163,7 @@ class Alerts extends Component {
 
         return (
             <React.Fragment>
+                {redirect}
                 {errorMessage}
                 <ConfirmModal 
                     show = {this.state.showModal}
@@ -205,8 +215,10 @@ const mapDispatchToProps = dispatch => {
     return {
         onAlertGetStart: () => dispatch( actions.alertGetStart() ),
         onAlertGetSuccess: () => dispatch( actions.alertGetSuccess() ),
-        onAlertGetFail: ( error ) => dispatch( actions.alertGetFail( error ) ),
+        onAuthFail: ( error ) => dispatch( actions.authFail( error )),
         onAlertFailHandle: () => dispatch( actions.authFailHandle() ),
+        onCheckAuth :  () => dispatch( actions.authCheckState() ),
+        onLogout: () => dispatch(actions.logout())
     };
 };
 

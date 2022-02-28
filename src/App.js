@@ -89,13 +89,11 @@ class App extends Component {
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.access_token !== null,
-        authRedirectPath : state.auth.authRedirectPath,
     };
 };
 const mapDispatchToProps = dispatch => {
     return {
         onCheckAuthCheckState :  () => dispatch( actions.authCheckState() ),
-        onSetAuthRedirectPath : () => dispatch( actions.setAuthRedirectPath( '/' ))
     };
 };
 

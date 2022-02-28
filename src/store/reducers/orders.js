@@ -4,7 +4,6 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
     error : '',
     error_msg : '', 
-    authRedirectPath: '/'
 };
 
 export const orderGetStart = () => {
