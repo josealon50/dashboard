@@ -36,8 +36,7 @@ export const logout = () => {
     localStorage.removeItem('expirationDate');
     localStorage.removeItem('refresh_token');
     return {
-        type: actionTypes.AUTH_LOGOUT,
-        path: '/'
+        type: actionTypes.AUTH_LOGOUT
     };
 };
 
@@ -70,19 +69,11 @@ export const auth = (username, password) => {
                 localStorage.setItem('expirationDate', expirationDate);
                 dispatch(authSuccess(response.data.data.access));
                 dispatch(checkAuthTimeout(600000));
-                dispatch(setAuthRedirectPath('/me'));
             })
             .catch(function (error) {
                 dispatch(authFail(error.response.data.errors[0].detail));
             
             });
-    };
-};
-
-export const setAuthRedirectPath = (path) => {
-    return {
-        type: actionTypes.SET_AUTH_REDIRECT_PATH,
-        path: path
     };
 };
 

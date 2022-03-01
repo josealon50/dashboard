@@ -13,6 +13,7 @@ import Button from 'react-bootstrap/Button';
 import axios from '../../axios-dashboard';
 import Moment from 'react-moment';
 import shortid from 'shortid';
+import moment from 'moment';
 
 
 
@@ -30,25 +31,37 @@ class Alerts extends Component {
         alertId : '',
         showModal : false,
         headers:  {
-            main : [ 'Unit Number', 'Component Code', 'Component Group', 'Blood Type','Cleared By', 'Cleared On', '' ],
-        }
+            main : [ 'Unit Number', 'Component Code', 'Alert', 'Cleared By', 'Cleared On', '' ],
+        },
 
     }
 
     componentDidMount() {
         if( this.props.isAuthenticated ){
             this.props.onAlertGetStart();
-            const _this = this;
-
-            axios.get( '/alerts', { headers : { Authorization: 'Bearer ' + this.props.access_token }})
-                .then(function (response) {
-                    _this.props.onAlertGetSuccess();
-                    _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
-                })
-                .catch(function (error) {
-                    _this.props.onAlertGetFail("Unauthorized") ;
-                });
+            this.getHospitalAlerts();
         }
+
+    }
+
+    getHospitalAlerts() {
+        const _this = this;
+
+        axios.get( '/alerts', { headers : { Authorization: 'Bearer ' + this.props.access_token }})
+            .then(function (response) {
+                _this.props.onAlertGetSuccess();
+                _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
+            })
+            .catch(function (error) {
+                if ( error.request.status == 401 ){
+                    //_this.props.onAuthFail("Unauthorized") ;
+                    _this.props.onAuthFail("Session Has Expired. Please log back in.") ;
+                    _this.props.onAlertFailHandle();
+                    _this.setState({ ..._this.state, setModalShow: false });
+                    _this.props.onLogout();
+                }
+            
+            });
     }
 
 
@@ -66,8 +79,9 @@ class Alerts extends Component {
                     _this.setState({ ..._this.state, alerts: response.data, pagination: response.data.links })
                 })
                 .catch(function (error) {
-                    if( error.request.status == 401 ){
-                        _this.onAlertGetFail("Unauthorized");
+                    if ( error.request.status == 401 ){
+                        _this.props.onAuthFail("Unauthorized") ;
+                        _this.setState({ ..._this.state, setModalShow: false});
                     }
                 });
         }
@@ -82,12 +96,15 @@ class Alerts extends Component {
             axios.put( '/alert/' + id + '/clear', null, { headers : { Authorization: 'Bearer ' + this.props.access_token }})
                 .then(function (response) {
                     _this.props.onAlertGetSuccess();
-                    _this.setState({ ..._this.state, setModalShow: false })
+                    _this.setState({ ..._this.state, showModal: false })
+                    _this.getHospitalAlerts();
 
                 })
                 .catch(function (error) {
-                    _this.props.onAlertGetFail("Unauthorized") ;
-                    _this.setState({ ..._this.state, setModalShow: false});
+                    if ( error.request.status == 401 ){
+                        _this.props.onAuthFail("Unauthorized") ;
+                        _this.setState({ ..._this.state, setModalShow: false});
+                    }
                 });
         }
     }
@@ -104,6 +121,11 @@ class Alerts extends Component {
 
     render () {
         let redirect = null;
+        let hospitalName = null;
+        let body = [];
+        let next = null;
+        let prev = null;
+
         if ( !this.props.isAuthenticated ) {
             redirect = <Redirect to='/' />
         }
@@ -114,10 +136,6 @@ class Alerts extends Component {
             errorMessage = <Alert style={{zIndex:99999}}  show={this.props.error} onClose={this.onCloseErrorAlert} dismissible variant="danger">{this.props.error_msg}</Alert>;
 
         }
-        let hospitalName = null;
-        let body = [];
-        let next = null;
-        let prev = null;
         if( this.state.alerts.data.length > 0 ){
             hospitalName = this.state.alerts.data[0].attributes.hospital.name + " Alerts ";
 
@@ -126,10 +144,9 @@ class Alerts extends Component {
                     <tr key={shortid.generate()}>
                         <td key={shortid.generate()}>{halert.attributes.component.unit_number}</td>
                         <td key={shortid.generate()}>{halert.attributes.component.component_code.component_code}</td>
-                        <td key={shortid.generate()}>{halert.attributes.component.component_code.group}</td>
-                        <td key={shortid.generate()}>{halert.attributes.component.blood_type_id.blood_type}</td>
+                        <td key={shortid.generate()}>{halert.attributes.alert.alert}</td>
                         <td key={shortid.generate()}>{halert.attributes.cleared_by}</td>
-                        <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY HH:MM:SS">{halert.attributes.cleared_on}</Moment> : ''}</td>
+                        <td key={shortid.generate()}>{halert.attributes.cleared_on ? <Moment format="MM-DD-YYYY hh:mm">{moment(halert.attributes.cleared_on).local()}</Moment> : ''}</td>
                         <td key={shortid.generate()}>{!halert.attributes.cleared_by ? <Button variant="success" onClick={() => this.clearHospitalAlert(halert.id)}>Clear</Button> : null}</td>
                     </tr>
                 );
@@ -146,6 +163,7 @@ class Alerts extends Component {
 
         return (
             <React.Fragment>
+                {redirect}
                 {errorMessage}
                 <ConfirmModal 
                     show = {this.state.showModal}
@@ -197,8 +215,10 @@ const mapDispatchToProps = dispatch => {
     return {
         onAlertGetStart: () => dispatch( actions.alertGetStart() ),
         onAlertGetSuccess: () => dispatch( actions.alertGetSuccess() ),
-        onAlertGetFail: ( error ) => dispatch( actions.alertGetFail( error ) ),
+        onAuthFail: ( error ) => dispatch( actions.authFail( error )),
         onAlertFailHandle: () => dispatch( actions.authFailHandle() ),
+        onCheckAuth :  () => dispatch( actions.authCheckState() ),
+        onLogout: () => dispatch(actions.logout())
     };
 };
 

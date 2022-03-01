@@ -102,7 +102,6 @@ const mapStateToProps = state => {
         isAuthenticated: state.auth.access_token !== null,
         error: state.auth.error,
         error_msg : state.auth.error_msg,
-        authRedirectPath: state.auth.authRedirectPath
     };
 };
 
@@ -111,7 +110,6 @@ const mapDispatchToProps = dispatch => {
         onAuth: ( email, password ) => dispatch( actions.auth( email, password ) ),
         onAuthFailHandle:  () => dispatch( actions.authFailHandle() ),
         onCheckAuth: () => dispatch( actions.authCheckState() ),
-        onSetAuthRedirectPath: ( path ) => dispatch( actions.setAuthRedirectPath(path) ) 
     };
 };
 

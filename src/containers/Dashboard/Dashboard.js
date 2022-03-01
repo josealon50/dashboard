@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Inventory from '../Inventory/Inventory';
 import Expired from '../Expired/Expired';
+import ComponentAlert from '../Alerts/Inventory/ComponentAlert';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Redirect } from 'react-router-dom';
@@ -31,6 +32,7 @@ class Dashboard extends Component {
         num_orders: null,
         num_shipments: null,
         not_found: false,
+        component_alert: false,
         headers : {
             expired: [ 'Unit number', 'Component Code', 'Expiration Date', 'Remaining Time' ]
         }
@@ -111,6 +113,7 @@ class Dashboard extends Component {
         return (
             <React.Fragment>
                 <div style={{paddingTop: '120px'}}>
+                    <ComponentAlert hospital_id={this.state.hospital_id} />
                     <Container>
                         <Row>
                             <Col>
